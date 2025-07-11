@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ConfigurationTable } from "../../presentation/components/configuration/ConfigurationTable";
-import { Game } from "../../presentation/components/game/Game";
-import { Home } from "../../presentation/components/home/Home";
-import { Table } from "../../presentation/components/table/Table";
+import { Game } from "../../presentation/components/pages/game/Game";
+import { Home } from "../../presentation/components/pages/home/Home";
 import { Layout } from "../../presentation/shared/layout/Layout";
+import { GameProvider } from "../state/context/GameContex";
+import { Table } from "../../presentation/components/pages/table/Table";
+import { ConfigurationTable } from "../../presentation/components/pages/configuration/ConfigurationTable";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
 function CustomRouterProvider() {
   return (
     <>
-      <RouterProvider router={router} />
+      <GameProvider>
+        <RouterProvider router={router} />
+      </GameProvider>
     </>
   );
 }

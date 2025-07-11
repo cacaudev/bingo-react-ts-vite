@@ -16,7 +16,8 @@ class Jogo {
   constructor(
     nomeJogo: string,
     quantidadeColunas: number,
-    quantidadeLinhas: number
+    quantidadeLinhas: number,
+    regra: "LINHA" | "COLUNA" | "TABELA" = "TABELA"
   ) {
     Jogo.verificarNome(nomeJogo);
 
@@ -24,7 +25,7 @@ class Jogo {
     this.dataCriacao = new Date();
 
     this.tabela = new Tabela(quantidadeColunas, quantidadeLinhas);
-    this.regras = RegrasBingo.criarPadrao();
+    this.regras = new RegrasBingo(regra)
   }
 
   /**

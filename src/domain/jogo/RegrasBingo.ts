@@ -12,26 +12,12 @@ class RegrasBingo {
   private colunaMarcada = false;
   private tabelaMarcada = true;
 
-  private constructor(
-    linhaMarcada: boolean,
-    colunaMarcada: boolean,
-    tabelaMarcada: boolean
+  public constructor(
+    opcao: "LINHA" | "COLUNA" | "TABELA" = "TABELA"
   ) {
-    this.atualizarLinhaMarcada(linhaMarcada);
-    this.atualizarColunaMarcada(colunaMarcada);
-    this.atualizarTabelaMarcada(tabelaMarcada);
-  }
-
-  public static criarPadrao() {
-    return new RegrasBingo(false, false, true);
-  }
-
-  public static criarCustomizado(
-    linhaMarcada: boolean,
-    colunaMarcada: boolean,
-    tabelaMarcada: boolean
-  ) {
-    return new RegrasBingo(linhaMarcada, colunaMarcada, tabelaMarcada);
+    this.atualizarLinhaMarcada(opcao == "LINHA");
+    this.atualizarColunaMarcada(opcao == "COLUNA");
+    this.atualizarTabelaMarcada(opcao == "TABELA");
   }
 
   /**
