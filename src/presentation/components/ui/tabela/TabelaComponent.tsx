@@ -4,37 +4,42 @@ import { Campo, Tabela } from "../../../../domain/jogo";
 import { CampoComponent } from "../campo/CampoComponent";
 
 interface Props {
-  numeroLinhas: number;
-  numeroColunas: number;
+  tabela: Tabela;
   editable: boolean;
+  changeTableCallback?: (campoEditado: Campo) => void;
 }
 
 function TabelaComponent(props: Props) {
-  const [tabela, setTabela] = useState(new Tabela(3, 3));
+  const [tabela, setTabela] = useState<Tabela>(props.tabela);
 
-  const tableChanged = (campo: Campo) => {
-    console.log("campo alterado em");
-    console.log("x ", campo.getIndice().getX());
-    console.log("y ", campo.getIndice().getY());
-    console.log("VALOR ", campo.getValor());
+  const fieldChanged = (campo: Campo) => {
+    if (props.editable) {
+      if (props.changeTableCallback == undefined) {
+        throw new Error("Função de callback para alteração na tabela não setada.")
+      }
+      props.changeTableCallback(campo);
+    }
   };
 
   return (
     <>
       <table>
         <tbody>
-          {tabela.campos.map((linha) => {
+          {tabela?.campos.map((linha) => {
             return (
               <tr>
                 {linha.map((campo) => (
                   <td>
                     <CampoComponent
-                      valor={campo.getValor()}
-                      marcado={campo.getMarcado()}
-                      x={campo.getIndice().getX()}
-                      y={campo.getIndice().getX()}
+                      key={
+                        "campo_x_" +
+                        campo.getIndice().getX() +
+                        "_y_" +
+                        campo.getIndice().getY()
+                      }
+                      campoProps={campo}
                       editable={props.editable}
-                      changeCallback={tableChanged}
+                      changeFieldCallback={fieldChanged}
                     />
                   </td>
                 ))}

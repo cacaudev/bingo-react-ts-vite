@@ -1,36 +1,61 @@
-import { useEffect } from "react";
-import { Campo, IndiceCampo, type ValorCampo } from "../../../../domain/jogo";
+import { useEffect, useState } from "react";
+import { Campo, IndiceCampo } from "../../../../domain/jogo";
 import "./CampoComponent.css";
 import Form from "react-bootstrap/Form";
 
 interface Props {
-  valor: ValorCampo;
-  marcado: boolean;
-  x: number;
-  y: number;
+  key: string;
+  campoProps: Campo;
   editable: boolean;
-  changeCallback: (campoEditado: Campo) => void;
+  changeFieldCallback?: (campoEditado: Campo) => void;
 }
 
 function CampoComponent(props: Props) {
-  const getBordaCampoCor = () => (props.marcado ? "red" : "blue");
+  const [campo, setCampo] = useState<Campo>(
+    new Campo(new IndiceCampo(0, 0), "*")
+  );
 
-  useEffect(() => {}, []);
+  const getBordaCampoCor = () =>
+    props.campoProps.getMarcado() ? "red" : "blue";
+
+  useEffect(() => {
+    if (props.campoProps != null) {
+      setCampo(
+        new Campo(
+          new IndiceCampo(
+            props.campoProps.getIndice().getX(),
+            props.campoProps.getIndice().getY()
+          ),
+          props.campoProps.getValor(),
+          props.campoProps.getMarcado(),
+          props.campoProps.getConsiderar()
+        )
+      );
+    }
+  }, []);
 
   const onChange = (event: any) => {
-    const campoAlterado = new Campo(
-      new IndiceCampo(props.x, props.y),
-      event.target.value,
-      props.editable ? props.marcado : false,
-      true
-    );
-    props.changeCallback(campoAlterado);
+    if (props.editable) {
+      if (props.changeFieldCallback == undefined) {
+        throw new Error(
+          "Função de callback para alteração no campo não setada."
+        );
+      }
+
+      if (campo != null) {
+        console.log("campo ", campo);
+
+        campo.atualizarValor(event.target.value.toString());
+        props.changeFieldCallback(campo);
+      }
+    }
   };
 
   return (
     <>
       {props.editable ? (
         <Form.Control
+          key={props.key}
           className="c-campo"
           type="number"
           placeholder="*"
@@ -40,7 +65,7 @@ function CampoComponent(props: Props) {
         />
       ) : (
         <div className="c-campo" style={{ borderColor: getBordaCampoCor() }}>
-          <p>{props.valor}</p>
+          <p>{props.campoProps.getValor()}</p>
         </div>
       )}
     </>

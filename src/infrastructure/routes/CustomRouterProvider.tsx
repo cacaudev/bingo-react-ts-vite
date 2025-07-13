@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Game } from "../../presentation/components/pages/game/Game";
 import { Home } from "../../presentation/components/pages/home/Home";
-import { Layout } from "../../presentation/shared/layout/Layout";
 import { GameProvider } from "../state/context/GameContex";
 import { Table } from "../../presentation/components/pages/table/Table";
 import { ConfigurationTable } from "../../presentation/components/pages/configuration/ConfigurationTable";
+import { Layout } from "../../presentation/layout/Layout";
 
 const router = createBrowserRouter([
   {

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import "./Home.css";
-import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 
 function Home() {
   return (
@@ -18,8 +17,6 @@ function Home() {
       </Link>
 
       <br />
-
-      <TabelaComponent numeroColunas={3} numeroLinhas={3} editable={true} />
     </>
   );
 }

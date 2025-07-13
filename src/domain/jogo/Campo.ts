@@ -4,7 +4,7 @@ type ValorCampo = string | null;
 
 class Campo {
   private readonly indice: IndiceCampo;
-  private valor: ValorCampo = "1";
+  private valor: ValorCampo = "*";
   private marcado: boolean;
   private considerar: boolean;
 
@@ -24,11 +24,8 @@ class Campo {
     this.considerar = considerar;
   }
 
-  public verificarValorFinal(): boolean {
-    if (this.valor == null || this.valor === undefined) {
-      return false;
-    }
-    return true;
+  public verificarSeValorFinalValido(): boolean {
+    return !(this.valor == null || this.valor === undefined);
   }
   private static verificarValorInicial(valor: ValorCampo): void {
     if (valor === undefined) {

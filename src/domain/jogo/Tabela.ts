@@ -1,7 +1,7 @@
-import { Campo } from './Campo';
-import type { ValorCampo  } from './Campo';
+import { Campo } from "./Campo";
+import type { ValorCampo } from "./Campo";
 
-import { IndiceCampo } from './IndiceCampo';
+import { IndiceCampo } from "./IndiceCampo";
 
 interface ITabelaDTO {
   quantidadeColunas: number;
@@ -51,7 +51,7 @@ class Tabela {
     const maximoColunas = 5;
 
     if (isVazio(quantidadeColunas)) {
-      throw new Error('Quantidade de colunas do jogo não pode ser vazia.');
+      throw new Error("Quantidade de colunas do jogo não pode ser vazia.");
     }
     if (quantidadeColunas < minimoColunas) {
       throw new Error(
@@ -76,7 +76,7 @@ class Tabela {
     const maximoLinhas = 5;
 
     if (isVazio(quantidadeLinhas)) {
-      throw new Error('Quantidade de linhas do jogo não pode ser vazia.');
+      throw new Error("Quantidade de linhas do jogo não pode ser vazia.");
     }
     if (quantidadeLinhas < minimoLinhas) {
       throw new Error(
@@ -93,14 +93,15 @@ class Tabela {
   private static gerarTabelaInicial(
     quantidadeColunas: number,
     quantidadeLinhas: number,
-    valorDefault: ValorCampo = '1'
+    valorDefault: ValorCampo = null
   ): Campo[][] {
     const novosCampos = [];
+
     for (let i = 0; i < quantidadeLinhas; i++) {
       const novaLinha: Campo[] = [];
 
       for (let j = 0; j < quantidadeColunas; j++) {
-        novaLinha.push(new Campo(new IndiceCampo(i, j), valorDefault, false));
+        novaLinha.push(new Campo(new IndiceCampo(i, j),  valorDefault, false));
       }
 
       novosCampos.push(novaLinha);
@@ -112,21 +113,37 @@ class Tabela {
     return this.quantidadeColunas * this.quantidadeLinhas;
   }
 
-  public validarTabela(): void {
+  /**
+   * Confere se tabela está pronta para começar o jogo,
+   * todos os campos devem estar preenchidos.
+   */
+  public validarTabela(): boolean {
     for (let i = 0; i < this.getQuantidadeLinhas(); i++) {
-      for (let j = 0; j < this.getQuantidadeColunas(); j++) {
-        if (!this.campos[i][j].verificarValorFinal()) {
-          throw new Error(
-            'Valor de um dos campos da tabela é inválido ou está vazio.'
-          );
+      for (let j = 0; j < this.getQuantidadeColunas(); j++) {        
+        if (!this.campos[i][j].verificarSeValorFinalValido()) {
+          this.tabelaValidada = false;
+          return false;
         }
       }
     }
     this.tabelaValidada = true;
+
+    return this.tabelaValidada;
   }
 
-  private verificarSeValorJaExisteNaTabela(valor: ValorCampo) {
-    if (valor == null || valor == undefined || valor == '') {
+  private static mesmoIndice = (
+    indiceOriginal: IndiceCampo,
+    x: number,
+    y: number
+  ): boolean => {
+    return indiceOriginal.getX() == x && indiceOriginal.getY() == y;
+  };
+
+  private verificarSeValorJaExisteNaTabela(
+    valorCampo: ValorCampo,
+    indiceCampo: IndiceCampo
+  ) {
+    if (valorCampo == null || valorCampo == undefined || valorCampo == "") {
       return false;
     }
 
@@ -134,7 +151,8 @@ class Tabela {
       for (let j = 0; j < this.getQuantidadeColunas(); j++) {
         if (
           this.campos[i][j].getConsiderar() &&
-          this.campos[i][j].getValor() === valor
+          this.campos[i][j].getValor() === valorCampo &&
+          !Tabela.mesmoIndice(indiceCampo, i, j)
         ) {
           return true;
         }
@@ -144,8 +162,13 @@ class Tabela {
   }
 
   public atualizarCampo(campoAtualizado: Campo) {
-    if (this.verificarSeValorJaExisteNaTabela(campoAtualizado.getValor())) {
-      throw new Error('Valor já existe na tabela.');
+    if (
+      this.verificarSeValorJaExisteNaTabela(
+        campoAtualizado.getValor(),
+        campoAtualizado.getIndice()
+      )
+    ) {
+      throw new Error("Valor já existe na tabela.");
     }
     const indice = campoAtualizado.getIndice();
     this.campos[indice.getX()][indice.getY()] = campoAtualizado;
