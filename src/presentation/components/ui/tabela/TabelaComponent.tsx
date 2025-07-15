@@ -22,7 +22,7 @@ function TabelaComponent(props: Props) {
   };
 
   return (
-    <>
+    <div className="c-tabela">
       <table>
         <tbody>
           {tabela?.campos.map((linha) => {
@@ -48,7 +48,7 @@ function TabelaComponent(props: Props) {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
