@@ -30,12 +30,18 @@ function Table() {
   };
 
   const goToNextPage = () => {
-    if (!game?.tabela.validarTabela()) {
-      alert("Valor de um dos campos da tabela é inválido ou está vazio.");
-      throw new Error(
-        "Valor de um dos campos da tabela é inválido ou está vazio."
-      );
+    try {
+      game?.validarTabelaERegrasParaIniciarJogo();
+    } catch (e: any) {
+      if (e instanceof Error) {
+        alert("Valor de um dos campos da tabela é inválido ou está vazio.");
+        throw e;
+      } else {
+        console.error("An unknown error occurred:", e);
+        return;
+      }      
     }
+
     navigate("/game");
   };
 

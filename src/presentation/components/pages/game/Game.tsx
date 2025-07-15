@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 import { Form } from "react-bootstrap";
+import { NumeroSorteado } from "../../../../domain/jogo";
 
 function Game() {
   const { game } = useGameContext();
   const [numeroSorteado, setNumeroSorteado] = useState<number>(0);
-  const [numerosSorteados, setNumerosSorteados] = useState<number[]>([]);
-  const [numerosString, setNumerosString] = useState<string>("");
+  const [numerosSorteadosString, setNumerosSorteadosString] = useState<string>("");
+  const [estadoNumeroSorteado, setEstadoNumeroSorteado] = useState<"ENCONTRADO" | "NAO_ENCONTRADO" | null>(null);
+  const [bingo, setBingo] = useState<boolean>(false);
 
   useEffect(() => {
     if (game != null) {
@@ -22,17 +24,30 @@ function Game() {
   };
 
   const jogarNumero = () => {
-    const numeros: number[] = numerosSorteados;
-    numeros.push(numeroSorteado);
-    setNumerosSorteados(numeros);
-    setNumerosString(numeros.join(", "));
+    const { foiAchado, foiBingo } = game.jogarNumero(numeroSorteado.toString());
+    atualizarNumerosSorteadosView();
+    if (foiBingo) {
+      setBingo(true);
+    }
+
+    setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
+    setTimeout(() => {
+      setEstadoNumeroSorteado(null);
+    }, 5000)
+    
   };
+
+  const atualizarNumerosSorteadosView = () => {
+    const novaView: string = game.
+      getNumerosSorteados().map((numero: NumeroSorteado) => numero.getValor()).join(", ");
+    setNumerosSorteadosString(novaView);
+  }
 
   return (
     <>
-      <h1>Game!</h1>
+      <h1>Hora de jogar!</h1>
       <br />
-      <h1>Jogo: {game?.getNome()}</h1>
+      <h2>Jogo: {game?.getNome()}</h2>
       <br />
       <div
         style={{
@@ -52,6 +67,7 @@ function Game() {
             justifyContent: "flex-start",
             alignContent: "baseline",
             alignItems: "flex-start",
+            textAlign: "initial",
             gap: "20px",
           }}
         >
@@ -68,20 +84,32 @@ function Game() {
               id="numeroJogado"
               onChange={changedNumeroSorteado}
               value={numeroSorteado}
+              disabled={bingo}
+              onKeyDown={(event) => event.key==='.' ? event.preventDefault(): null}
             />
             <button
               type="button"
               onClick={jogarNumero}
               style={{ backgroundColor: "red" }}
+              disabled={bingo}
             >
               Jogar número
-            </button>
+            </button>           
           </div>
+
+          <p>{estadoNumeroSorteado != null && (<> Último número sorteado:  {estadoNumeroSorteado}</> )}</p>
 
           <div>
             <h3>Números jogados:</h3>
-            <h5>{numerosString}</h5>
+            <h5>{numerosSorteadosString}</h5>
           </div>
+
+          <br />
+
+          <div>
+            {bingo && (<h1>Bingo!!!</h1>)}            
+          </div>
+
         </div>
       </div>
       <br />

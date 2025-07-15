@@ -101,7 +101,7 @@ class Tabela {
       const novaLinha: Campo[] = [];
 
       for (let j = 0; j < quantidadeColunas; j++) {
-        novaLinha.push(new Campo(new IndiceCampo(i, j),  valorDefault, false));
+        novaLinha.push(new Campo(new IndiceCampo(i, j), valorDefault, false));
       }
 
       novosCampos.push(novaLinha);
@@ -117,18 +117,18 @@ class Tabela {
    * Confere se tabela está pronta para começar o jogo,
    * todos os campos devem estar preenchidos.
    */
-  public validarTabela(): boolean {
+  public validarTabela(): void {
     for (let i = 0; i < this.getQuantidadeLinhas(); i++) {
-      for (let j = 0; j < this.getQuantidadeColunas(); j++) {        
+      for (let j = 0; j < this.getQuantidadeColunas(); j++) {
         if (!this.campos[i][j].verificarSeValorFinalValido()) {
           this.tabelaValidada = false;
-          return false;
+          throw new Error(
+            "Valor de um dos campos da tabela é inválido ou está vazio."
+          );
         }
       }
     }
     this.tabelaValidada = true;
-
-    return this.tabelaValidada;
   }
 
   private static mesmoIndice = (

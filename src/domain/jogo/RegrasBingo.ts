@@ -68,7 +68,7 @@ class RegrasBingo {
     RegrasBingo.verificarRegra(this.tabelaMarcada);
 
     if (!this.colunaMarcada && !this.linhaMarcada && !this.tabelaMarcada) {
-      throw new Error("Pelo menos uma regra deve estar marcada.");
+      throw new Error("Pelo menos um tipo de regra deve estar marcada.");
     }
   }
 

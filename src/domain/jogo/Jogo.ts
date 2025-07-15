@@ -9,7 +9,11 @@ class Jogo {
 
   public readonly tabela: Tabela;
   public regras: RegrasBingo;
-  public numerosSorteados: NumeroSorteado[] = [];
+
+  private numerosSorteados: NumeroSorteado[] = [];
+  public getNumerosSorteados(): NumeroSorteado[] {
+    return this.numerosSorteados;
+  }
 
   private resultadoBingo = false;
 
@@ -80,7 +84,7 @@ class Jogo {
     this.resultadoBingo = false;
   }
 
-  validarTabelaERegrasParaIniciarJogo(): void {
+  public validarTabelaERegrasParaIniciarJogo(): void {
     this.tabela.validarTabela();
     this.regras.validarRegras();
   }
