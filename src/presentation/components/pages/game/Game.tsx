@@ -7,8 +7,11 @@ import { NumeroSorteado } from "../../../../domain/jogo";
 function Game() {
   const { game } = useGameContext();
   const [numeroSorteado, setNumeroSorteado] = useState<number>(0);
-  const [numerosSorteadosString, setNumerosSorteadosString] = useState<string>("");
-  const [estadoNumeroSorteado, setEstadoNumeroSorteado] = useState<"ENCONTRADO" | "NAO_ENCONTRADO" | null>(null);
+  const [numerosSorteadosString, setNumerosSorteadosString] =
+    useState<string>("");
+  const [estadoNumeroSorteado, setEstadoNumeroSorteado] = useState<
+    "ENCONTRADO" | "NAO_ENCONTRADO" | null
+  >(null);
   const [bingo, setBingo] = useState<boolean>(false);
 
   useEffect(() => {
@@ -33,15 +36,31 @@ function Game() {
     setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
     setTimeout(() => {
       setEstadoNumeroSorteado(null);
-    }, 5000)
-    
+    }, 7000);
   };
 
   const atualizarNumerosSorteadosView = () => {
-    const novaView: string = game.
-      getNumerosSorteados().map((numero: NumeroSorteado) => numero.getValor()).join(", ");
+    const novaView: string = game
+      .getNumerosSorteados()
+      .map((numero: NumeroSorteado) => numero.getValor())
+      .join(", ");
     setNumerosSorteadosString(novaView);
-  }
+  };
+
+  const resetarJogo = () => {
+    game?.resetarJogo();
+    setBingo(false);
+    setNumerosSorteadosString("");
+    atualizarNumerosSorteadosView();
+  };
+
+  const desfazerUltimoNumeroJogado = () => {
+    game?.desfazerUltimoNumeroJogado();
+    atualizarNumerosSorteadosView();
+  };
+
+  const disableInputsWithDecimalNumber = (event) =>
+    event.key === "." || event.key === "," ? event.preventDefault() : null;
 
   return (
     <>
@@ -49,6 +68,7 @@ function Game() {
       <br />
       <h2>Jogo: {game?.getNome()}</h2>
       <br />
+
       <div
         style={{
           display: "flex",
@@ -85,7 +105,7 @@ function Game() {
               onChange={changedNumeroSorteado}
               value={numeroSorteado}
               disabled={bingo}
-              onKeyDown={(event) => event.key==='.' ? event.preventDefault(): null}
+              onKeyDown={disableInputsWithDecimalNumber}
             />
             <button
               type="button"
@@ -94,10 +114,14 @@ function Game() {
               disabled={bingo}
             >
               Jogar número
-            </button>           
+            </button>
           </div>
 
-          <p>{estadoNumeroSorteado != null && (<> Último número sorteado:  {estadoNumeroSorteado}</> )}</p>
+          <p>
+            {estadoNumeroSorteado != null && (
+              <> Último número sorteado: {estadoNumeroSorteado}</>
+            )}
+          </p>
 
           <div>
             <h3>Números jogados:</h3>
@@ -107,12 +131,23 @@ function Game() {
           <br />
 
           <div>
-            {bingo && (<h1>Bingo!!!</h1>)}            
+            <button type="button" onClick={desfazerUltimoNumeroJogado}>
+              Desfazer último número jogado
+            </button>
           </div>
 
+          <br />
+
+          <div>{bingo && <h1>Bingo!!!</h1>}</div>
         </div>
       </div>
       <br />
+
+      <div>
+        <button type="button" onClick={resetarJogo}>
+          Resetar jogo
+        </button>
+      </div>
     </>
   );
 }

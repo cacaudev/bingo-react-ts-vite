@@ -1,7 +1,7 @@
-import { IndiceCampo } from './IndiceCampo';
-import { NumeroSorteado } from './NumeroSorteado';
-import { RegrasBingo } from './RegrasBingo';
-import { Tabela } from './Tabela';
+import { IndiceCampo } from "./IndiceCampo";
+import { NumeroSorteado } from "./NumeroSorteado";
+import { RegrasBingo } from "./RegrasBingo";
+import { Tabela } from "./Tabela";
 
 class Jogo {
   private nome: string;
@@ -29,7 +29,7 @@ class Jogo {
     this.dataCriacao = new Date();
 
     this.tabela = new Tabela(quantidadeColunas, quantidadeLinhas);
-    this.regras = new RegrasBingo(regra)
+    this.regras = new RegrasBingo(regra);
   }
 
   /**
@@ -55,13 +55,13 @@ class Jogo {
 
   private static verificarNome(nome: string): void {
     const isVazio = (nome: string): boolean =>
-      nome == null || nome == '' || nome == undefined;
+      nome == null || nome == "" || nome == undefined;
 
     const maximoCaracters = 50;
     const minimoCaracters = 5;
 
     if (isVazio(nome)) {
-      throw new Error('Nome do jogo não pode ser vazio.');
+      throw new Error("Nome do jogo não pode ser vazio.");
     }
     if (nome.length < minimoCaracters) {
       throw new Error(
@@ -156,6 +156,7 @@ class Jogo {
     }
     const ultimoNumeroSorteado: NumeroSorteado =
       this.numerosSorteados[this.numerosSorteados.length - 1];
+
     if (
       ultimoNumeroSorteado.getAchado() &&
       ultimoNumeroSorteado.getIndiceCampo().getX() != -1
@@ -164,6 +165,8 @@ class Jogo {
         ultimoNumeroSorteado.getIndiceCampo().getY()
       ].atualizarMarcado(false);
     }
+
+    this.numerosSorteados.pop();
   }
 
   public verificarSeBingo(): boolean {
