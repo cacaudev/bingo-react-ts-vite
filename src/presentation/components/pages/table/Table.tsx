@@ -1,12 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 import type { Campo } from "../../../../domain/jogo";
+import { Form } from "react-bootstrap";
 
 function Table() {
   const { game } = useGameContext();
   const navigate = useNavigate();
+  const [campoDoMeioMarcado, setCampoDoMeioMarcado] = useState<boolean>(false);
 
   useEffect(() => {
     if (game != null) {
@@ -29,6 +31,11 @@ function Table() {
     }
   };
 
+  const campoMeioCheckboxChanged = (event: any) => {
+    setCampoDoMeioMarcado(!campoDoMeioMarcado);
+    game?.tabela.estadoCampoMeioNulo(event.target.checked);
+  }
+
   const goToNextPage = () => {
     try {
       game?.validarTabelaERegrasParaIniciarJogo();
@@ -39,7 +46,7 @@ function Table() {
       } else {
         console.error("An unknown error occurred:", e);
         return;
-      }      
+      }
     }
 
     navigate("/game");
@@ -58,6 +65,17 @@ function Table() {
           tabela={game?.tabela}
           editable={true}
           changeTableCallback={tableChanged}
+          considerarCampoMeio={campoDoMeioMarcado}
+        />
+
+        <br />
+
+        <Form.Check
+          type="checkbox"
+          id="disabledFieldsetCheck"
+          label="Considerar campo no meio da cartela como marcado."
+          checked={campoDoMeioMarcado}
+          onChange={campoMeioCheckboxChanged}
         />
 
         <br />

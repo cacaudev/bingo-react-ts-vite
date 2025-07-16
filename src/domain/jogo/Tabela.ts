@@ -174,10 +174,22 @@ class Tabela {
     this.campos[indice.getX()][indice.getY()] = campoAtualizado;
   }
 
+  public estadoCampoMeioNulo(considerarNulo: boolean = true) {
+    if (this.getQuantidadeColunas() != this.getQuantidadeLinhas()) {
+      throw new Error("Número de linhas é diferente do número de colunas.")
+    }
+    const indiceMeio = Math.floor(this.getQuantidadeColunas() / 2);
+    
+    const novoCampo = new Campo(new IndiceCampo(indiceMeio, indiceMeio), "*", considerarNulo, !considerarNulo);
+    this.campos[novoCampo.getIndice().getX()][novoCampo.getIndice().getY()] = novoCampo;
+  }
+
   public resetarMarcacaoDeTodosOsCampos() {
     for (let i = 0; i < this.getQuantidadeLinhas(); i++) {
       for (let j = 0; j < this.getQuantidadeColunas(); j++) {
-        this.campos[i][j].atualizarMarcado(false);
+        if (this.campos[i][j].getConsiderar()) {
+          this.campos[i][j].atualizarMarcado(false);
+        }
       }
     }
   }

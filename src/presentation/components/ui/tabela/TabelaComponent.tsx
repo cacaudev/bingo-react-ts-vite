@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./TabelaComponent.css";
 import { Campo, Tabela } from "../../../../domain/jogo";
 import { CampoComponent } from "../campo/CampoComponent";
@@ -6,6 +6,7 @@ import { CampoComponent } from "../campo/CampoComponent";
 interface Props {
   tabela: Tabela;
   editable: boolean;
+  considerarCampoMeio: boolean;
   changeTableCallback?: (campoEditado: Campo) => void;
 }
 
@@ -15,11 +16,20 @@ function TabelaComponent(props: Props) {
   const fieldChanged = (campo: Campo) => {
     if (props.editable) {
       if (props.changeTableCallback == undefined) {
-        throw new Error("Função de callback para alteração na tabela não setada.")
+        throw new Error(
+          "Função de callback para alteração na tabela não setada."
+        );
       }
       props.changeTableCallback(campo);
     }
   };
+
+  useEffect(() => {
+    campoMeioAlterado(props.considerarCampoMeio);
+  }, [props.considerarCampoMeio]);
+
+  const campoMeioAlterado = (considerarMarcado: boolean) =>
+    tabela.estadoCampoMeioNulo(considerarMarcado);
 
   return (
     <div className="c-tabela">
@@ -38,7 +48,7 @@ function TabelaComponent(props: Props) {
                         campo.getIndice().getY()
                       }
                       campoProps={campo}
-                      editable={props.editable}
+                      editable={campo.getConsiderar() ? props.editable : false}
                       changeFieldCallback={fieldChanged}
                     />
                   </td>
