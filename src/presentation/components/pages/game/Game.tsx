@@ -131,7 +131,7 @@ function Game() {
           <br />
 
           <div>
-            <button type="button" onClick={desfazerUltimoNumeroJogado}>
+            <button type="button" onClick={desfazerUltimoNumeroJogado} disabled={bingo}>
               Desfazer último número jogado
             </button>
           </div>

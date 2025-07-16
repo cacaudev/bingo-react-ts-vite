@@ -41,7 +41,7 @@ function Table() {
       game?.validarTabelaERegrasParaIniciarJogo();
     } catch (e: any) {
       if (e instanceof Error) {
-        alert("Valor de um dos campos da tabela é inválido ou está vazio.");
+        alert("Valor de um dos campos da tabela é inválido, vazio ou repetido.");
         throw e;
       } else {
         console.error("An unknown error occurred:", e);

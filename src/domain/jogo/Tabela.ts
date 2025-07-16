@@ -139,7 +139,7 @@ class Tabela {
     return indiceOriginal.getX() == x && indiceOriginal.getY() == y;
   };
 
-  private verificarSeValorJaExisteNaTabela(
+  public verificarSeValorJaExisteNaTabela(
     valorCampo: ValorCampo,
     indiceCampo: IndiceCampo
   ) {

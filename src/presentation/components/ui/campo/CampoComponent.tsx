@@ -43,8 +43,6 @@ function CampoComponent(props: Props) {
       }
 
       if (campo != null) {
-        console.log("campo ", campo);
-
         campo.atualizarValor(event.target.value.toString());
         props.changeFieldCallback(campo);
       }
@@ -61,7 +59,7 @@ function CampoComponent(props: Props) {
           placeholder="*"
           max={500}
           min={0}
-          onChange={onChange}
+          onBlur={onChange}
         />
       ) : (
         <div className="c-campo" style={{ borderColor: getBordaCampoCor() }}>

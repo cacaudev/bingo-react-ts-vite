@@ -15,11 +15,25 @@ function TabelaComponent(props: Props) {
 
   const fieldChanged = (campo: Campo) => {
     if (props.editable) {
-      if (props.changeTableCallback == undefined) {
+      if (
+        props.changeTableCallback == undefined ||
+        props.changeTableCallback == null
+      ) {
         throw new Error(
           "Função de callback para alteração na tabela não setada."
         );
       }
+
+      if (
+        tabela.verificarSeValorJaExisteNaTabela(
+          campo.getValor(),
+          campo.getIndice()
+        )
+      ) {
+        alert("Valor já existe na tabela.");
+        return;
+      }
+
       props.changeTableCallback(campo);
     }
   };
