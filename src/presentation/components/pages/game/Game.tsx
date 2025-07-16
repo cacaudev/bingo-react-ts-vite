@@ -34,9 +34,6 @@ function Game() {
     }
 
     setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
-    setTimeout(() => {
-      setEstadoNumeroSorteado(null);
-    }, 7000);
   };
 
   const atualizarNumerosSorteadosView = () => {
@@ -115,12 +112,11 @@ function Game() {
               value={numeroSorteado}
               disabled={bingo}
               onKeyDown={handleKeyPress}
-              // Disable decimal number
             />
             <button
               type="button"
               onClick={jogarNumero}
-              style={{ backgroundColor: "red" }}
+              style={{ backgroundColor: "red", width: "100%" }}
               disabled={bingo}
             >
               Jogar número
@@ -129,13 +125,15 @@ function Game() {
 
           <p>
             {estadoNumeroSorteado != null && (
-              <> Último número sorteado: {estadoNumeroSorteado}</>
+              <> Último número sorteado: {numeroSorteado} Estado: {estadoNumeroSorteado}</>
             )}
           </p>
 
           <div>
             <h3>Números jogados:</h3>
+            <div style={{ maxWidth: "300px"}}>
             <h5>{numerosSorteadosString}</h5>
+            </div>
           </div>
 
           <br />
@@ -145,6 +143,7 @@ function Game() {
               type="button"
               onClick={desfazerUltimoNumeroJogado}
               disabled={bingo}
+              style={{ width: "100%" }}
             >
               Desfazer último número jogado
             </button>

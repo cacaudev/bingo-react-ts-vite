@@ -34,14 +34,16 @@ function Table() {
   const campoMeioCheckboxChanged = (event: any) => {
     setCampoDoMeioMarcado(!campoDoMeioMarcado);
     game?.tabela.estadoCampoMeioNulo(event.target.checked);
-  }
+  };
 
   const goToNextPage = () => {
     try {
       game?.validarTabelaERegrasParaIniciarJogo();
     } catch (e: any) {
       if (e instanceof Error) {
-        alert("Valor de um dos campos da tabela é inválido, vazio ou repetido.");
+        alert(
+          "Valor de um dos campos da tabela é inválido, vazio ou repetido."
+        );
         throw e;
       } else {
         console.error("An unknown error occurred:", e);
@@ -61,22 +63,31 @@ function Table() {
 
         <br />
 
-        <TabelaComponent
-          tabela={game?.tabela}
-          editable={true}
-          changeTableCallback={tableChanged}
-          considerarCampoMeio={campoDoMeioMarcado}
-        />
-
-        <br />
-
-        <Form.Check
-          type="checkbox"
-          id="disabledFieldsetCheck"
-          label="Considerar campo no meio da cartela como marcado."
-          checked={campoDoMeioMarcado}
-          onChange={campoMeioCheckboxChanged}
-        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignContent: "baseline",
+            alignItems: "flex-start",
+            textAlign: "initial",
+            gap: "20px",
+          }}
+        >
+          <Form.Check
+            type="checkbox"
+            id="disabledFieldsetCheck"
+            label="Considerar campo no meio da cartela como marcado."
+            checked={campoDoMeioMarcado}
+            onChange={campoMeioCheckboxChanged}
+          />
+          <TabelaComponent
+            tabela={game?.tabela}
+            editable={true}
+            changeTableCallback={tableChanged}
+            considerarCampoMeio={campoDoMeioMarcado}
+          />
+        </div>
 
         <br />
 
