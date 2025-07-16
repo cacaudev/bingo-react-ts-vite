@@ -59,8 +59,17 @@ function Game() {
     atualizarNumerosSorteadosView();
   };
 
-  const disableInputsWithDecimalNumber = (event) =>
-    event.key === "." || event.key === "," ? event.preventDefault() : null;
+  const handleKeyPress = (event) => {
+    // Disable decimal number
+    if (event.key === "." || event.key === ",") {
+      event.preventDefault();
+    }
+
+    // Accepts enter to submit new value
+    if (event.key === "Enter") {
+      jogarNumero();
+    }
+  };
 
   return (
     <>
@@ -105,7 +114,8 @@ function Game() {
               onChange={changedNumeroSorteado}
               value={numeroSorteado}
               disabled={bingo}
-              onKeyDown={disableInputsWithDecimalNumber}
+              onKeyDown={handleKeyPress}
+              // Disable decimal number
             />
             <button
               type="button"
@@ -131,7 +141,11 @@ function Game() {
           <br />
 
           <div>
-            <button type="button" onClick={desfazerUltimoNumeroJogado} disabled={bingo}>
+            <button
+              type="button"
+              onClick={desfazerUltimoNumeroJogado}
+              disabled={bingo}
+            >
               Desfazer último número jogado
             </button>
           </div>
