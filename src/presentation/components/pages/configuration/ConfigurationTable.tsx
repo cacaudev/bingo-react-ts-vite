@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
 import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
+import "./ConfigurationTable.css";
+import { Button } from "../../ui/button/Button";
 
 const tamanhoTabelas: { id: number; nome: string; value: number }[] = [
   {
@@ -45,17 +47,25 @@ function ConfigurationTable() {
   };
 
   const criarJogo = () => {
-    startGame(nomeJogo, tamanho, tamanho, regra as "LINHA" | "COLUNA" | "TABELA");
+    startGame(
+      nomeJogo,
+      tamanho,
+      tamanho,
+      regra as "LINHA" | "COLUNA" | "TABELA"
+    );
     navigate("/table");
   };
 
+  const voltar = () => {
+    navigate("/");
+  }
+
   return (
     <>
-      <h1>Configuração Tabela</h1>
-      <br />
-
       <div>
         <h3>Selecione as configurações para o jogo:</h3>
+
+        <br />
 
         <Form.Label htmlFor="inputPassword5">Nome Jogo:</Form.Label>
         <Form.Control
@@ -97,13 +107,19 @@ function ConfigurationTable() {
 
         <br />
 
-        <Link to="/">
-          <button type="button">Voltar</button>
-        </Link>
+        <div className="c-config-table__buttons">
+          <Button
+            onClick={voltar}
+            text={"Voltar"}
+            role={"secondary"}
+          />
 
-        <button type="button" onClick={criarJogo}>
-          Próximo
-        </button>
+          <Button
+            onClick={criarJogo}
+            text={"Próximo"}
+            role={"primary"}
+          />
+        </div>
       </div>
     </>
   );

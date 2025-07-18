@@ -4,12 +4,12 @@ import { Home } from "../../presentation/components/pages/home/Home";
 import { GameProvider } from "../state/context/GameContex";
 import { Table } from "../../presentation/components/pages/table/Table";
 import { ConfigurationTable } from "../../presentation/components/pages/configuration/ConfigurationTable";
-import { Layout } from "../../presentation/layout/Layout";
+import { Page } from "../../presentation/layout/page/Page";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <Page />,
     children: [
       {
         path: "/",

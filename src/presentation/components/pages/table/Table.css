@@ -1,0 +1,8 @@
+.c-table__buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+
+  padding-top: 50px;
+}

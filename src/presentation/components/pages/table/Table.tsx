@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 import type { Campo } from "../../../../domain/jogo";
 import { Form } from "react-bootstrap";
+import { Button } from "../../ui/button/Button";
+import './Table.css';
 
 function Table() {
   const { game } = useGameContext();
@@ -54,9 +56,13 @@ function Table() {
     navigate("/game");
   };
 
+  const goToPreviousPage = () => {
+    navigate("/config");
+  }
+
   return (
     <>
-      <h1>Tabela Jogo: {game?.getNome()}</h1>
+      <h1>{game?.getNome()}</h1>
 
       <div>
         <p>Complete sua tabela com os valores nos campos:</p>
@@ -89,14 +95,19 @@ function Table() {
           />
         </div>
 
-        <br />
+        <div className="c-table__buttons">
+          <Button
+            onClick={goToPreviousPage}
+            text={"Cancelar Jogo Atual"}
+            role={"secondary"}
+          />
 
-        <Link to="/config">
-          <button type="button">Cancelar Jogo Atual</button>
-        </Link>
-        <button type="button" onClick={goToNextPage}>
-          Jogar
-        </button>
+          <Button
+            onClick={goToNextPage}
+            text={"Jogar"}
+            role={"primary"}
+          />
+        </div>
       </div>
     </>
   );

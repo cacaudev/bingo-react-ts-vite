@@ -1,0 +1,38 @@
+.l-page__footer {
+  width: 100%;
+  height: var(--footer-height);
+
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  display: flex;
+}
+
+.l-page__footer__content {
+  width: inherit;
+  height: inherit;
+
+  margin: 0px;
+  padding: var(--page-content-padding);
+
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--topbar-bg);
+  
+  transition: all 0.3s ease;
+}
+
+.c-footer-title {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(90deg,rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

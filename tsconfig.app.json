@@ -21,7 +21,14 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "paths": {
+      /* Static Resources */
+      "@styles/*": ["./src/assets/styles/*"],
+      "@icons/*": ["./src/assets/icons/*"],
+      "@img/*": ["./src/assets/img/*"]
+    }
   },
   "include": ["src"]
 }

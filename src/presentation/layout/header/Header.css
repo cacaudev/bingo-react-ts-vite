@@ -1,0 +1,49 @@
+.c-topnavbar {
+  width: 100%;
+  height: var(--header-height);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1005;
+
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  transition: all 0.25s ease-in-out;
+}
+
+.c-topnavbar__container {
+  width: inherit;
+  height: inherit;
+
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  padding: var(--page-content-padding);
+  margin: 0 auto;
+
+  -webkit-box-pack: justify;
+  -webkit-box-align: center;
+  -webkit-box-align: center !important;
+}
+
+.c-topnavbar__title {
+  font-size: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  margin: 0;
+  padding: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
