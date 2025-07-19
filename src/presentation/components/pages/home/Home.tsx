@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button/Button";
+import { useEffect } from "react";
+import { useGameContext } from "../../../../infrastructure/state/context/GameContext";
 
 function Home() {
   const navigate = useNavigate();
@@ -8,8 +10,54 @@ function Home() {
     navigate("/config");
   };
 
+  const { gameStatus } = useGameContext();
+
+  useEffect(() => {
+    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+      navigate("/table");
+      return;
+    }
+
+    if (
+      gameStatus == "TABELA_PREENCHIDA" ||
+      gameStatus == "JOGO_EM_ANDAMENTO" ||
+      gameStatus == "BINGO"
+    ) {
+      navigate("/game");
+    }
+  }, []);
+
   return (
-    <Button onClick={irParaConfiguracao} text={"Criar Jogo"} role={"primary"} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        //justifyContent: "center",
+        alignContent: "center",
+        textAlign: "center",
+        maxWidth: "500px"
+      }}
+    >
+      <p>
+        Bem-vindo(a) ao Bingo Player App, seu assistente virtual para jogar
+        bingo. Nossa ferramenta te auxilia na jogatina verificando e marcando os
+        números sorteados, te avisando em tempo real para não perder nenhum
+        prêmio.
+      </p>
+
+      <p>
+        DISCLAIMER: Essa ferramenta não tem o objetivo de criar cartelas de
+        bingo, nosso intuito é apenas de ajudar o usuário na hora do jogo em si,
+        eliminando uso de editores de pdf ou IAs para marcar cartelas.{" "}
+        <b>
+          Para usar este assistente você deve já ter em maõs uma cartela pronta.
+        </b>
+      </p>
+
+      <br/>
+      
+      <Button onClick={irParaConfiguracao} text={"Iniciar"} role={"primary"} />
+    </div>
   );
 }
 

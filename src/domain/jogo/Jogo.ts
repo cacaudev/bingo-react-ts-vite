@@ -89,11 +89,8 @@ class Jogo {
     this.regras.validarRegras();
   }
 
-  adicionarNumeroSorteado(numeroSorteado: NumeroSorteado): void {
+  private adicionarNumeroSorteado(numeroSorteado: NumeroSorteado): void {
     this.numerosSorteados.push(numeroSorteado);
-  }
-  removerUltimoNumeroSorteado(): void {
-    this.numerosSorteados.pop();
   }
 
   public jogarNumero(valorSorteado: string): {
@@ -101,6 +98,10 @@ class Jogo {
     foiAchado: boolean;
     indiceCampo: IndiceCampo;
   } {
+    if (this.resultadoBingo) {
+      throw new Error("Jogo já finalizado.")
+    }
+
     /**
      * Verificar se valor sorteado é um número e não está vazio
      */
@@ -135,6 +136,7 @@ class Jogo {
         numeroFoiAchadoNaTabela
       );
     }
+
     this.adicionarNumeroSorteado(novoNumeroSorteado);
 
     let considerouBingo = false;

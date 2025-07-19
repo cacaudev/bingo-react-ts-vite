@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
+import { useGameContext } from "../../../../infrastructure/state/context/GameContext";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 import { Form } from "react-bootstrap";
 import { NumeroSorteado } from "../../../../domain/jogo";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../ui/button/Button";
 
 function Game() {
-  const { game } = useGameContext();
+  const { game, gameStatus, updateStatus, cancelCurrentGame } = useGameContext();
+
   const [numeroSorteado, setNumeroSorteado] = useState<number>(0);
   const [numerosSorteadosString, setNumerosSorteadosString] =
     useState<string>("");
@@ -13,6 +16,8 @@ function Game() {
     "ENCONTRADO" | "NAO_ENCONTRADO" | null
   >(null);
   const [bingo, setBingo] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (game != null) {
@@ -22,6 +27,16 @@ function Game() {
     }
   }, [game]);
 
+  useEffect(() => {
+    if (gameStatus == "JOGO_NAO_CRIADO") {
+      navigate("/config");
+      return;
+    }
+    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+      navigate("/table");
+    }
+  }, []);
+
   const changedNumeroSorteado = (event: any): void => {
     setNumeroSorteado(event.target.value);
   };
@@ -29,8 +44,12 @@ function Game() {
   const jogarNumero = () => {
     const { foiAchado, foiBingo } = game.jogarNumero(numeroSorteado.toString());
     atualizarNumerosSorteadosView();
+
     if (foiBingo) {
       setBingo(true);
+      updateStatus("BINGO");
+    } else {
+      updateStatus("JOGO_EM_ANDAMENTO");
     }
 
     setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
@@ -67,6 +86,11 @@ function Game() {
       jogarNumero();
     }
   };
+
+  const newGame = () => {
+    cancelCurrentGame();
+    navigate("/config");
+  }
 
   return (
     <>
@@ -125,14 +149,18 @@ function Game() {
 
           <p>
             {estadoNumeroSorteado != null && (
-              <> Último número sorteado: {numeroSorteado} Estado: {estadoNumeroSorteado}</>
+              <>
+                {" "}
+                Último número sorteado: {numeroSorteado} Estado:{" "}
+                {estadoNumeroSorteado}
+              </>
             )}
           </p>
 
           <div>
             <h3>Números jogados:</h3>
-            <div style={{ maxWidth: "300px"}}>
-            <h5>{numerosSorteadosString}</h5>
+            <div style={{ maxWidth: "300px" }}>
+              <h5>{numerosSorteadosString}</h5>
             </div>
           </div>
 
@@ -160,6 +188,12 @@ function Game() {
         <button type="button" onClick={resetarJogo}>
           Resetar jogo
         </button>
+
+         <Button
+            onClick={newGame}
+            text={"Novo Jogo"}
+            role={"secondary"}
+          />
       </div>
     </>
   );

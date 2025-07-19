@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import {useNavigate } from "react-router-dom";
-import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
+import { useNavigate } from "react-router-dom";
+import { useGameContext } from "../../../../infrastructure/state/context/GameContext";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
 import type { Campo } from "../../../../domain/jogo";
 import { Form } from "react-bootstrap";
 import { Button } from "../../ui/button/Button";
-import './Table.css';
+import "./Table.css";
 
 function Table() {
-  const { game } = useGameContext();
+  const { game, gameStatus, updateStatus, cancelCurrentGame } = useGameContext();
   const navigate = useNavigate();
   const [campoDoMeioMarcado, setCampoDoMeioMarcado] = useState<boolean>(false);
 
@@ -19,6 +19,21 @@ function Table() {
       console.log("nome jogo e data ", game.tabela.getQuantidadeCamposTabela());
     }
   }, [game]);
+
+  useEffect(() => {
+    if (gameStatus == "JOGO_NAO_CRIADO") {
+      navigate("/config");
+      return;
+    }
+
+    if (
+      gameStatus == "TABELA_PREENCHIDA" ||
+      gameStatus == "JOGO_EM_ANDAMENTO" ||
+      gameStatus == "BINGO"
+    ) {
+      navigate("/game");
+    }
+  }, []);
 
   const tableChanged = (campo: Campo) => {
     try {
@@ -31,6 +46,8 @@ function Table() {
         console.error("An unknown error occurred:", e);
       }
     }
+
+    updateStatus("PREENCHENDO_TABELA");
   };
 
   const campoMeioCheckboxChanged = (event: any) => {
@@ -53,12 +70,14 @@ function Table() {
       }
     }
 
+    updateStatus("TABELA_PREENCHIDA");
     navigate("/game");
   };
 
-  const goToPreviousPage = () => {
+  const cancelGame = () => {
+    cancelCurrentGame();
     navigate("/config");
-  }
+  };
 
   return (
     <>
@@ -97,16 +116,12 @@ function Table() {
 
         <div className="c-table__buttons">
           <Button
-            onClick={goToPreviousPage}
+            onClick={cancelGame}
             text={"Cancelar Jogo Atual"}
             role={"secondary"}
           />
 
-          <Button
-            onClick={goToNextPage}
-            text={"Jogar"}
-            role={"primary"}
-          />
+          <Button onClick={goToNextPage} text={"Jogar"} role={"primary"} />
         </div>
       </div>
     </>

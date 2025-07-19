@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import { useState } from "react";
-import { useGameContext } from "../../../../infrastructure/state/context/GameContex";
+import { useEffect, useState } from "react";
+import { useGameContext } from "../../../../infrastructure/state/context/GameContext";
 import "./ConfigurationTable.css";
 import { Button } from "../../ui/button/Button";
 
@@ -30,9 +30,24 @@ function ConfigurationTable() {
   const [regra, setRegra] = useState(regrasBingo[0].value);
   const [nomeJogo, setNomeJogo] = useState("Jogo #1");
 
-  const { startGame } = useGameContext();
+  const { startGame, gameStatus, updateStatus } = useGameContext();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+      navigate("/table");
+      return;
+    }
+
+    if (
+      gameStatus == "TABELA_PREENCHIDA" ||
+      gameStatus == "JOGO_EM_ANDAMENTO" ||
+      gameStatus == "BINGO"
+    ) {
+      navigate("/game");
+    }
+  }, []);
 
   const onNomeChange = (event: any) => {
     setNomeJogo(event.target.value);
@@ -58,7 +73,7 @@ function ConfigurationTable() {
 
   const voltar = () => {
     navigate("/");
-  }
+  };
 
   return (
     <>
@@ -110,15 +125,11 @@ function ConfigurationTable() {
         <div className="c-config-table__buttons">
           <Button
             onClick={voltar}
-            text={"Voltar"}
+            text={"Voltar para início"}
             role={"secondary"}
           />
 
-          <Button
-            onClick={criarJogo}
-            text={"Próximo"}
-            role={"primary"}
-          />
+          <Button onClick={criarJogo} text={"Próximo"} role={"primary"} />
         </div>
       </div>
     </>
