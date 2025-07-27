@@ -2,20 +2,26 @@ import { IndiceCampo } from "./IndiceCampo";
 import { NumeroSorteado } from "./NumeroSorteado";
 import { RegrasBingo } from "./RegrasBingo";
 import { Tabela } from "./Tabela";
+import type { Campo, ValorCampo } from "./Campo";
+
+export type JogoStatus =
+  | "JOGO_CRIADO" // Jogo foi criado mas tabela não foi preenchida
+  | "PREENCHENDO_TABELA" // Pelo menos um número foi preenchido na tabela
+  | "JOGO_EM_ANDAMENTO" // Pelo menos um número foi sorteado
+  | "BINGO"; // Todos os números da tabela foram sorteados e marcados
 
 class Jogo {
   private nome: string;
   private readonly dataCriacao: Date;
 
-  public readonly tabela: Tabela;
-  public regras: RegrasBingo;
+  private readonly tabela: Tabela;
+  private campoDoMeioTabelaENulo: boolean = true;
+
+  private readonly regras: RegrasBingo;
 
   private numerosSorteados: NumeroSorteado[] = [];
-  public getNumerosSorteados(): NumeroSorteado[] {
-    return this.numerosSorteados;
-  }
 
-  private resultadoBingo = false;
+  private status: JogoStatus;
 
   constructor(
     nomeJogo: string,
@@ -23,13 +29,14 @@ class Jogo {
     quantidadeLinhas: number,
     regra: "LINHA" | "COLUNA" | "TABELA" = "TABELA"
   ) {
-    Jogo.verificarNome(nomeJogo);
+    this.validarNome(nomeJogo);
 
     this.nome = nomeJogo;
     this.dataCriacao = new Date();
 
     this.tabela = new Tabela(quantidadeColunas, quantidadeLinhas);
     this.regras = new RegrasBingo(regra);
+    this.status = "JOGO_CRIADO";
   }
 
   /**
@@ -41,19 +48,62 @@ class Jogo {
   public getDataCriacao(): Date {
     return this.dataCriacao;
   }
-  public getResultadoBingo(): boolean {
-    return this.resultadoBingo;
+  public getStatus(): JogoStatus {
+    return this.status;
+  }
+  public getNumerosSorteados(): NumeroSorteado[] {
+    return this.numerosSorteados;
+  }
+  public getEstadoNumeroDoMeioTabelaSeNulo(): boolean {
+    return this.campoDoMeioTabelaENulo;
   }
 
   /**
    * Set Functions
    */
+
   public atualizarNome(nomeNovo: string): void {
-    Jogo.verificarNome(nomeNovo);
+    if (!this.sePodeAtualizarDadosJogo()) {
+      throw new Error(
+        "Não é possível alterar nome caso jogo já esteja em andamento ou finalizado."
+      );
+    }
+    this.validarNome(nomeNovo);
     this.nome = nomeNovo;
   }
 
-  private static verificarNome(nome: string): void {
+  /**
+   * Fases do jogo dependendo do status e dados
+   */
+  private seFaseInicial() {
+    return this.status == "JOGO_CRIADO";
+  }
+  private seFasePreenchimento() {
+    return this.status == "PREENCHENDO_TABELA";
+  }
+  private seFaseJogoAndamento() {
+    return this.status == "JOGO_EM_ANDAMENTO";
+  }
+  private seFaseJogoConcluido() {
+    return this.status == "BINGO";
+  }
+
+  /**
+   * Regras do jogo dependendo do status
+   */
+
+  /**
+   * Dados: Nome ou regras
+   */
+  private sePodeAtualizarDadosJogo(): boolean {
+    return this.seFaseInicial();
+  }
+
+  /**
+   * Funções de validação
+   */
+
+  private validarNome(nome: string): void {
     const isVazio = (nome: string): boolean =>
       nome == null || nome == "" || nome == undefined;
 
@@ -76,12 +126,17 @@ class Jogo {
   }
 
   /**
-   * Reseta o status de marcado de todos os campos para valor inicial false
+   * Funções públicas do jogo
    */
-  resetarJogo(): void {
+
+  /**
+   * Reseta o status de marcado de todos os campos para valor inicial false,
+   * não altera o valor dos campos.
+   */
+  public reiniciarJogoEmAndamento(): void {
     this.tabela.resetarMarcacaoDeTodosOsCampos();
     this.numerosSorteados = [];
-    this.resultadoBingo = false;
+    this.status = "JOGO_EM_ANDAMENTO";
   }
 
   public validarTabelaERegrasParaIniciarJogo(): void {
@@ -98,8 +153,10 @@ class Jogo {
     foiAchado: boolean;
     indiceCampo: IndiceCampo;
   } {
-    if (this.resultadoBingo) {
-      throw new Error("Jogo já finalizado.")
+    if (!this.seFaseJogoAndamento()) {
+      throw new Error(
+        "Não é possível jogar número caso o jogo já esteja finalizado ou na fase de preenchimento de tabela."
+      );
     }
 
     /**
@@ -142,7 +199,10 @@ class Jogo {
     let considerouBingo = false;
     if (numeroFoiAchadoNaTabela) {
       considerouBingo = this.verificarSeBingo();
-      this.resultadoBingo = considerouBingo;
+
+      if (considerouBingo) {
+        this.status = "BINGO";
+      }
     }
 
     return {
@@ -153,6 +213,15 @@ class Jogo {
   }
 
   public desfazerUltimoNumeroJogado() {
+    if (this.seFaseJogoConcluido()) {
+      throw new Error("Jogo já finalizado.");
+    }
+    if (!this.seFaseJogoAndamento()) {
+      throw new Error(
+        "Não é possível desfazer um número sorteado se jogo não foi inicializado."
+      );
+    }
+
     if (this.numerosSorteados.length == 0) {
       return;
     }
@@ -171,7 +240,16 @@ class Jogo {
     this.numerosSorteados.pop();
   }
 
-  public verificarSeBingo(): boolean {
+  public iniciarJogo() {
+    this.validarTabelaERegrasParaIniciarJogo();
+    this.status = "JOGO_EM_ANDAMENTO";
+  }
+
+  /**
+   * Funções regras internas do jogo de bingo
+   */
+
+  private verificarSeBingo(): boolean {
     let bingoPorTabelaToda = false;
     if (this.regras.getTabelaMarcada()) {
       bingoPorTabelaToda = this.verificarSeBingoPorTabelaToda();
@@ -259,6 +337,105 @@ class Jogo {
       foiBingo = true;
     }
     return foiBingo;
+  }
+
+  /**
+   * Funções da interface da tabela
+   */
+
+  // Tamanho Tabela
+  public getQuantidadeCamposTabela(): number {
+    return this.tabela.getQuantidadeCamposTabela();
+  }
+  public getQuantidadeColunas(): number {
+    return this.tabela.getQuantidadeColunas();
+  }
+  public getQuantidadeLinhas(): number {
+    return this.tabela.getQuantidadeLinhas();
+  }
+
+  // Validação tabela
+
+  public getTabelaValidada(): boolean {
+    return this.tabela.getTabelaValidada();
+  }
+  public validarTabela(): void {
+    this.tabela.validarTabela(); // Pode emitir erro
+  }
+
+  // Campos
+
+  public verificarSeValorExisteNaTabela(
+    valorCampo: ValorCampo,
+    indiceCampo: IndiceCampo
+  ): boolean {
+    return this.tabela.verificarSeValorJaExisteNaTabela(
+      valorCampo,
+      indiceCampo
+    );
+  }
+
+  // Preenchimento tabela
+
+  public atualizarCampoTabela(campoAtualizado: Campo): void {
+    if (!this.seFaseInicial() && !this.seFasePreenchimento()) {
+      throw new Error(
+        "Não é possível alterar valor de campo da tabela após jogo ter sido iniciado."
+      );
+    }
+
+    this.tabela.atualizarCampo(campoAtualizado); // Pode emitir erro
+
+    if (this.status != "PREENCHENDO_TABELA") {
+      this.status = "PREENCHENDO_TABELA";
+    }
+  }
+  public alterarEstadoCampoDoMeioTabela(
+    considerarComoNulo: boolean = true
+  ): void {
+    this.tabela.estadoCampoMeioNulo(considerarComoNulo);
+    this.campoDoMeioTabelaENulo = considerarComoNulo;
+  }
+
+  /**
+   * Funções da interface da regras
+   */
+
+  public getRegras(): {
+    linhaMarcada: boolean;
+    linhaColunaMarcada: boolean;
+    tabelaMarcada: boolean;
+  } {
+    return {
+      linhaMarcada: this.regras.getLinhaMarcada(),
+      linhaColunaMarcada: this.regras.getColunaMarcada(),
+      tabelaMarcada: this.regras.getTabelaMarcada(),
+    };
+  }
+
+  public atualizarRegraLinhaMarcada(regraAtualizada: boolean): void {
+    if (!this.sePodeAtualizarDadosJogo()) {
+      throw new Error(
+        "Não é possível alterar regra caso o jogo já esteja em andamento ou finalizado."
+      );
+    }
+    this.regras.atualizarLinhaMarcada(regraAtualizada);
+  }
+  public atualizarRegraColunaMarcada(regraAtualizada: boolean): void {
+    if (!this.sePodeAtualizarDadosJogo()) {
+      throw new Error(
+        "Não é possível alterar regra caso o jogo já esteja em andamento ou finalizado."
+      );
+    }
+    this.regras.atualizarColunaMarcada(regraAtualizada);
+  }
+  public atualizarRegraTabelaMarcada(regraAtualizada: boolean): void {
+    if (!this.sePodeAtualizarDadosJogo()) {
+      throw new Error(
+        "Não é possível alterar regra caso o jogo já esteja em andamento ou finalizado."
+      );
+    }
+    this.regras.atualizarTabelaMarcada(regraAtualizada);
   }
 }
 

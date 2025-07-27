@@ -72,7 +72,7 @@ class RegrasBingo {
     }
   }
 
-  public static verificarRegra(regraAtualizada: boolean) {
+  private static verificarRegra(regraAtualizada: boolean) {
     const isVazio = (valor: boolean): boolean =>
       valor == null || valor == undefined;
     if (isVazio(regraAtualizada)) {

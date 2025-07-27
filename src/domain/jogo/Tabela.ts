@@ -117,18 +117,30 @@ class Tabela {
    * Confere se tabela está pronta para começar o jogo,
    * todos os campos devem estar preenchidos.
    */
-  public validarTabela(): void {
+  public seTodosOsCamposEstaoPreenchidos(): boolean {
+    let seTodasPreenchidas = true;
+
     for (let i = 0; i < this.getQuantidadeLinhas(); i++) {
       for (let j = 0; j < this.getQuantidadeColunas(); j++) {
         if (!this.campos[i][j].verificarSeValorFinalValido()) {
-          this.tabelaValidada = false;
-          throw new Error(
-            "Valor de um dos campos da tabela é inválido ou está vazio."
-          );
+          seTodasPreenchidas = false;
         }
       }
     }
-    this.tabelaValidada = true;
+
+    return seTodasPreenchidas;
+  }
+
+  public validarTabela(): void {
+    const seTodaPreenchida = this.seTodosOsCamposEstaoPreenchidos();
+
+    this.tabelaValidada = seTodaPreenchida;
+
+    if (!seTodaPreenchida) {
+      throw new Error(
+        "Valor de um dos campos da tabela é inválido ou está vazio."
+      );
+    }
   }
 
   private static mesmoIndice = (
@@ -142,7 +154,7 @@ class Tabela {
   public verificarSeValorJaExisteNaTabela(
     valorCampo: ValorCampo,
     indiceCampo: IndiceCampo
-  ) {
+  ): boolean {
     if (valorCampo == null || valorCampo == undefined || valorCampo == "") {
       return false;
     }
@@ -161,7 +173,7 @@ class Tabela {
     return false;
   }
 
-  public atualizarCampo(campoAtualizado: Campo) {
+  public atualizarCampo(campoAtualizado: Campo): void {
     if (
       this.verificarSeValorJaExisteNaTabela(
         campoAtualizado.getValor(),
@@ -174,17 +186,23 @@ class Tabela {
     this.campos[indice.getX()][indice.getY()] = campoAtualizado;
   }
 
-  public estadoCampoMeioNulo(considerarNulo: boolean = true) {
+  public estadoCampoMeioNulo(considerarNulo: boolean = true): void {
     if (this.getQuantidadeColunas() != this.getQuantidadeLinhas()) {
-      throw new Error("Número de linhas é diferente do número de colunas.")
+      throw new Error("Número de linhas é diferente do número de colunas.");
     }
     const indiceMeio = Math.floor(this.getQuantidadeColunas() / 2);
-    
-    const novoCampo = new Campo(new IndiceCampo(indiceMeio, indiceMeio), "*", considerarNulo, !considerarNulo);
-    this.campos[novoCampo.getIndice().getX()][novoCampo.getIndice().getY()] = novoCampo;
+
+    const novoCampo = new Campo(
+      new IndiceCampo(indiceMeio, indiceMeio),
+      "*",
+      considerarNulo,
+      !considerarNulo
+    );
+    this.campos[novoCampo.getIndice().getX()][novoCampo.getIndice().getY()] =
+      novoCampo;
   }
 
-  public resetarMarcacaoDeTodosOsCampos() {
+  public resetarMarcacaoDeTodosOsCampos(): void {
     for (let i = 0; i < this.getQuantidadeLinhas(); i++) {
       for (let j = 0; j < this.getQuantidadeColunas(); j++) {
         if (this.campos[i][j].getConsiderar()) {
