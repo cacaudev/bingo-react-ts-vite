@@ -1,16 +1,62 @@
+.c-table {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+}
+
+.c-table-column-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: baseline;
+  align-items: flex-start;
+  text-align: initial;
+}
+
 .c-table__buttons {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 1em;
   justify-content: center;
 
-  padding: 30px;
+  padding: 1em 0em;
 }
 
-.form-check {
-  padding: 0;
-}
-
-.form-check label {
+.c-table.form-check label {
   font-weight: 600;
+  margin-left: -1.3em;
+}
+
+.c-table-check {
+  padding: 0.5em;
+  border-radius: 0.5em;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+@media screen and (max-width: 556px) {
+  .c-table.form-check label {
+    font-size: 0.75em;
+    margin-left: -1.5em;
+    margin-top: 0.35em;
+  }
+}
+
+@media screen and (max-width: 769px) {
+  .c-table-column-right {
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .c-table__buttons {
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+  }
 }

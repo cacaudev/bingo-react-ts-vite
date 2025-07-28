@@ -11,15 +11,25 @@
   font-weight: bold;
   font-size: 4rem;
   padding: 10px;
+  margin: 0.01em;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
   width: 8rem;
   height: 8rem;
 
-  border: 2px solid blue;
+  border: 1px solid black;
   border-radius: 4px;
 
   color: black;
+}
+
+.c-campo.marcado {
+  border: 1px solid white;
+  background: rgba(240, 0, 60, 1);
+  color: white;
+}
+.campo.marcado:hover {
+  background: rgba(153, 0, 38, 1);
 }
 
 input.c-campo {
@@ -29,13 +39,13 @@ input.c-campo {
   margin: 0;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 556px) {
   /* Styles applied when the screen width is 768px or less */
 
   .c-campo {
     font-size: 2.5rem;
-    width: 6rem;
-    height: 6rem;
+    width: 4rem;
+    height: 4rem;
   }
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Campo } from "./Campo";
 import type { ValorCampo } from "./Campo";
 
@@ -95,7 +96,7 @@ class Tabela {
     quantidadeLinhas: number,
     valorDefault: ValorCampo = null
   ): Campo[][] {
-    const novosCampos = [];
+    const novosCampos: any = [];
 
     for (let i = 0; i < quantidadeLinhas; i++) {
       const novaLinha: Campo[] = [];

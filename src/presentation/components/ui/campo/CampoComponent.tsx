@@ -16,8 +16,8 @@ function CampoComponent(props: Props) {
     new Campo(new IndiceCampo(0, 0), "*")
   );
 
-  const getBordaCampoCor = () =>
-    props.campoProps.getMarcado() ? "red" : "blue";
+  const campoStyle = (): string =>
+    props.campoProps.getMarcado() ? "c-campo marcado" : "c-campo";
 
   useEffect(() => {
     if (props.campoProps != null) {
@@ -49,7 +49,6 @@ function CampoComponent(props: Props) {
       }
     }
   };
-
   return (
     <>
       {props.editable ? (
@@ -63,7 +62,7 @@ function CampoComponent(props: Props) {
           onBlur={onChange}
         />
       ) : (
-        <div className="c-campo" style={{ borderColor: getBordaCampoCor() }}>
+        <div className={campoStyle()}>
           <p>{props.campoProps.getValor()}</p>
         </div>
       )}

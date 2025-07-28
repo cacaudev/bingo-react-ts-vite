@@ -20,19 +20,13 @@ function Table() {
   const [campoDoMeioMarcado, setCampoDoMeioMarcado] = useState<boolean>(true);
 
   useEffect(() => {
-    const gameStatus = verifyExistsAndUpdateGameSaved()
+    const gameStatus = verifyExistsAndUpdateGameSaved();
     if (gameStatus != null) {
-      if (
-        gameStatus == "JOGO_CRIADO" ||
-        gameStatus == "PREENCHENDO_TABELA"
-      ) {
+      if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
         navigate("/table");
         return;
       }
-      if (
-        gameStatus == "JOGO_EM_ANDAMENTO" ||
-        gameStatus == "BINGO"
-      ) {
+      if (gameStatus == "JOGO_EM_ANDAMENTO" || gameStatus == "BINGO") {
         navigate("/game");
       }
     } else {
@@ -87,46 +81,41 @@ function Table() {
 
   return (
     <>
-      <h1>{game.getNome()}</h1>
+      <h2>{game.getNome()}</h2>
 
       <div>
-        <p>Complete sua tabela com os valores nos campos:</p>
+        <p>Complete sua tabela com os valores da cartela:</p>
 
         <br />
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignContent: "baseline",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          <Form.Check
-            type="checkbox"
-            id="disabledFieldsetCheck"
-            label="Considerar campo no meio da cartela como marcado."
-            checked={campoDoMeioMarcado}
-            onChange={campoMeioCheckboxChanged}           
-          />
+        <div className="c-table">
           <TabelaComponent
             tabela={game.getTabela()}
             editable={true}
             changeTableCallback={tableChanged}
             considerarCampoMeio={campoDoMeioMarcado}
           />
-        </div>
+          <div className="c-table-column-right">
+            <div className="c-table-check">
+              <Form.Check
+                className="c-table"
+                type="checkbox"
+                id="disabledFieldsetCheck"
+                label="Considerar campo no meio da cartela como marcado."
+                checked={campoDoMeioMarcado}
+                onChange={campoMeioCheckboxChanged}
+              />
+            </div>
+            <div className="c-table__buttons">
+              <Button
+                onClick={cancelGame}
+                text={"Cancelar Jogo Atual"}
+                role={"secondary"}
+              />
 
-        <div className="c-table__buttons">
-          <Button
-            onClick={cancelGame}
-            text={"Cancelar Jogo Atual"}
-            role={"secondary"}
-          />
-
-          <Button onClick={goToNextPage} text={"Jogar"} role={"primary"} />
+              <Button onClick={goToNextPage} text={"Jogar"} role={"primary"} />
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -103,9 +103,6 @@ class Jogo {
   /**
    * Fases do jogo dependendo do status e dados
    */
-  private seNaoIniciado() {
-    return (this.status = "JOGO_NAO_INICIADO");
-  }
   private seFaseInicial() {
     return this.status == "JOGO_CRIADO";
   }

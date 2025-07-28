@@ -77,11 +77,10 @@ function ConfigurationTable() {
 
   return (
     <>
-      <div>
+      <div className="c-config">
         <h3>Selecione as configurações para o jogo:</h3>
 
         <br />
-
         <Form.Label htmlFor="inputPassword5">Nome Jogo:</Form.Label>
         <Form.Control
           type="text"

@@ -8,15 +8,13 @@ interface Props {
 
 function Button(props: Props) {
   return (
-    <button
-      className="button-82-pushable"
+    <a
+      className={"button-custom" + " " + props.role}
       role="button"
       onClick={props.onClick}
     >
-      <span className="button-82-shadow"></span>
-      <span className={"button-82-edge"}></span>
-      <span className={"button-82-front text" + " " + props.role}>{props.text}</span>
-    </button>
+      {props.text}
+    </a>
   );
 }
 

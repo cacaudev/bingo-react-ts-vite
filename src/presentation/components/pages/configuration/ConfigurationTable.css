@@ -5,4 +5,9 @@
   justify-content: center;
 
   padding: 20px;
+  text-align: left !important;
+}
+
+.c-config {
+  text-align: left;
 }
