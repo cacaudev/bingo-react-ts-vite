@@ -1,5 +1,29 @@
 .c-tabela {
   display: flex;
-  padding: 20px;
+  padding: 1em;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  min-width: 2em;
+}
+
+@media screen and (max-width: 768px) {
+  /* Styles applied when the screen width is 768px or less */
+
+  .c-tabela {
+    min-width: 0.2em;
+    padding: 0.2em;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1200px) {
+  /* Styles applied when the screen width is between 769px and 1200px */
+  .c-tabela {
+    min-width: 2rem;
+  }
+}
+
+@media screen and (min-width: 1201px) {
+  /* Styles applied when the screen width is 1201px or more */
+   .c-tabela {
+    min-width: 2rem;
+  }
 }

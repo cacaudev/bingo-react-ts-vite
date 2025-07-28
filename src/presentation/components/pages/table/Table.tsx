@@ -98,10 +98,9 @@ function Table() {
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
+            justifyContent: "center",
             alignContent: "baseline",
-            alignItems: "flex-start",
-            textAlign: "initial",
+            alignItems: "center",
             gap: "20px",
           }}
         >
@@ -110,7 +109,7 @@ function Table() {
             id="disabledFieldsetCheck"
             label="Considerar campo no meio da cartela como marcado."
             checked={campoDoMeioMarcado}
-            onChange={campoMeioCheckboxChanged}
+            onChange={campoMeioCheckboxChanged}           
           />
           <TabelaComponent
             tabela={game.getTabela()}

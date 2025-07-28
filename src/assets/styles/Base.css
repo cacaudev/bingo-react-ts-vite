@@ -8,9 +8,12 @@
 body {
   display: flex;
   place-items: center;
-  
+  justify-content: center;
+
+  width: 100%;
   min-width: 320px;
   min-height: 100vh;
+  padding: 10px;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -40,24 +43,10 @@ body {
   background: #555;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }

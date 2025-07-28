@@ -6,3 +6,11 @@
 
   padding: 30px;
 }
+
+.form-check {
+  padding: 0;
+}
+
+.form-check label {
+  font-weight: 600;
+}

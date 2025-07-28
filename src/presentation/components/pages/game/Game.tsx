@@ -130,10 +130,11 @@ function Game() {
         style={{
           display: "flex",
           flexDirection: "row",
-          flexWrap: "nowrap",
-          justifyContent: "space-between",
+          flexWrap: "wrap",
+          justifyContent: "center",
           alignItems: "flex-start",
           gap: "30px",
+          width: "100%"
         }}
       >
         <TabelaComponent
