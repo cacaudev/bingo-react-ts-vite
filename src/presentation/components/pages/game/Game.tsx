@@ -15,12 +15,10 @@ function Game() {
     updateGameStateOnStorage,
   } = useGameContext();
 
-  const [numeroSorteado, setNumeroSorteado] = useState<number>(0);
+  const [numeroSorteado, setNumeroSorteado] = useState<string>("");
   const [numerosSorteadosString, setNumerosSorteadosString] =
     useState<string>("");
-  const [estadoNumeroSorteado, setEstadoNumeroSorteado] = useState<
-    "ENCONTRADO" | "NAO_ENCONTRADO" | null
-  >(null);
+  const [estadoNumeroSorteado, setEstadoNumeroSorteado] = useState<string>("");
   const [bingo, setBingo] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -43,11 +41,25 @@ function Game() {
     }
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setEstadoNumeroSorteado("");
+    }, 5000);
+  }, [estadoNumeroSorteado]);
+
   const changedNumeroSorteado = (event: any): void => {
     setNumeroSorteado(event.target.value);
   };
 
   const jogarNumero = () => {
+    if (
+      numeroSorteado == null ||
+      numeroSorteado == undefined ||
+      numeroSorteado == ""
+    ) {
+      return;
+    }
+
     const { foiAchado, foiBingo } = game.jogarNumero(numeroSorteado.toString());
     atualizarNumerosSorteadosView();
 
@@ -55,7 +67,13 @@ function Game() {
       setBingo(true);
     }
 
-    setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
+    setEstadoNumeroSorteado(
+      foiAchado
+        ? `Número ${numeroSorteado} foi encontrado.`
+        : `Número ${numeroSorteado} não foi encontrado.`
+    );
+
+    setNumeroSorteado("");
     updateGameStateOnStorage();
   };
 
@@ -160,15 +178,7 @@ function Game() {
             </button>
           </div>
 
-          <p>
-            {estadoNumeroSorteado != null && (
-              <>
-                {" "}
-                Último número sorteado: {numeroSorteado} Estado:{" "}
-                {estadoNumeroSorteado}
-              </>
-            )}
-          </p>
+          <p>{estadoNumeroSorteado != null && <>{estadoNumeroSorteado}</>}</p>
 
           <div>
             <h3>Números jogados:</h3>
