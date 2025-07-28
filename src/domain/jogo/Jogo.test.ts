@@ -4,7 +4,7 @@ import { Jogo } from "./Jogo";
 
 describe("Jogo", () => {
   test("Deveria criar um novo jogo", (done) => {
-    const aJogo = new Jogo("Teste", 2, 3);
+    const aJogo = Jogo.createCustom("Teste", 2, 3);
     expect(aJogo.getNome()).toBe("Teste");
     expect(aJogo.getRegras()).toStrictEqual({
       linhaMarcada: false,
@@ -17,7 +17,7 @@ describe("Jogo", () => {
   });
 
   test("Deveria criar um novo jogo e resultar em bingo para tabela toda marcada", (done) => {
-    const aJogo = new Jogo("Teste", 2, 2);
+    const aJogo = Jogo.createCustom("Teste", 2, 2);
     aJogo.atualizarRegraTabelaMarcada(true);
 
     aJogo.atualizarCampoTabela(new Campo(new IndiceCampo(0, 0), "23"));
@@ -40,7 +40,7 @@ describe("Jogo", () => {
   });
 
   test("Deveria criar um novo jogo e resultar em bingo para uma linha toda marcada", (done) => {
-    const aJogo = new Jogo("Teste", 2, 2);
+    const aJogo =  Jogo.createCustom("Teste", 2, 2);
     aJogo.atualizarRegraLinhaMarcada(true);
 
     aJogo.atualizarCampoTabela(new Campo(new IndiceCampo(0, 0), "23"));
@@ -61,7 +61,7 @@ describe("Jogo", () => {
   });
 
   test("Deveria criar um novo jogo e resultar em bingo uma coluna toda marcada", (done) => {
-    const aJogo = new Jogo("Teste", 2, 2);
+    const aJogo = Jogo.createCustom("Teste", 2, 2);
     aJogo.atualizarRegraColunaMarcada(true);
 
     aJogo.atualizarCampoTabela(new Campo(new IndiceCampo(0, 0), "23"));

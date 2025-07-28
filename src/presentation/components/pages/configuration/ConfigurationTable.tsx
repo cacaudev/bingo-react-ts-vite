@@ -30,24 +30,23 @@ function ConfigurationTable() {
   const [regra, setRegra] = useState(regrasBingo[0].value);
   const [nomeJogo, setNomeJogo] = useState("Jogo #1");
 
-  const { startGame, gameStatus, updateStatus } = useGameContext();
+  const { startGame, verifyExistsAndUpdateGameSaved, game } = useGameContext();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
-      navigate("/table");
-      return;
-    }
+    const gameStatus = verifyExistsAndUpdateGameSaved();
 
-    if (
-      gameStatus == "TABELA_PREENCHIDA" ||
-      gameStatus == "JOGO_EM_ANDAMENTO" ||
-      gameStatus == "BINGO"
-    ) {
-      navigate("/game");
+    if (gameStatus != null) {
+      if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+        navigate("/table");
+        return;
+      }
+      if (gameStatus == "JOGO_EM_ANDAMENTO" || gameStatus == "BINGO") {
+        navigate("/game");
+      }
     }
-  }, []);
+  }, [game]);
 
   const onNomeChange = (event: any) => {
     setNomeJogo(event.target.value);
@@ -68,6 +67,7 @@ function ConfigurationTable() {
       tamanho,
       regra as "LINHA" | "COLUNA" | "TABELA"
     );
+
     navigate("/table");
   };
 

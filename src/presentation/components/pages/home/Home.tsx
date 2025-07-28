@@ -10,32 +10,31 @@ function Home() {
     navigate("/config");
   };
 
-  const { gameStatus } = useGameContext();
+  const { verifyExistsAndUpdateGameSaved, game } = useGameContext();
 
   useEffect(() => {
-    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
-      navigate("/table");
-      return;
+    const gameStatus = verifyExistsAndUpdateGameSaved();
+    if (gameStatus != null) {
+      console.log("game ", gameStatus);
+      
+      if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+        navigate("/table");
+        return;
+      }
+      if (gameStatus == "JOGO_EM_ANDAMENTO" || gameStatus == "BINGO") {
+        navigate("/game");
+      }
     }
-
-    if (
-      gameStatus == "TABELA_PREENCHIDA" ||
-      gameStatus == "JOGO_EM_ANDAMENTO" ||
-      gameStatus == "BINGO"
-    ) {
-      navigate("/game");
-    }
-  }, []);
+  }, [game]);
 
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        //justifyContent: "center",
         alignContent: "center",
         textAlign: "center",
-        maxWidth: "500px"
+        maxWidth: "500px",
       }}
     >
       <p>
@@ -54,8 +53,8 @@ function Home() {
         </b>
       </p>
 
-      <br/>
-      
+      <br />
+
       <Button onClick={irParaConfiguracao} text={"Iniciar"} role={"primary"} />
     </div>
   );

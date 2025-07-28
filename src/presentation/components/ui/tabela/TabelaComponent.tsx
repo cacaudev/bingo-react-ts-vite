@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import "./TabelaComponent.css";
 import { Campo, Tabela } from "../../../../domain/jogo";
@@ -42,8 +43,11 @@ function TabelaComponent(props: Props) {
     campoMeioAlterado(props.considerarCampoMeio);
   }, [props.considerarCampoMeio]);
 
-  const campoMeioAlterado = (considerarMarcado: boolean) =>
-    tabela.estadoCampoMeioNulo(considerarMarcado);
+  const campoMeioAlterado = (considerarMarcado: boolean) => {
+    if (tabela != null && tabela != undefined) {
+      tabela.estadoCampoMeioNulo(considerarMarcado);
+    }
+  };
 
   return (
     <div className="c-tabela">

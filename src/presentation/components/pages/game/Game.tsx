@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useGameContext } from "../../../../infrastructure/state/context/GameContext";
 import { TabelaComponent } from "../../ui/tabela/TabelaComponent";
@@ -7,7 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button/Button";
 
 function Game() {
-  const { game, gameStatus, updateStatus, cancelCurrentGame } = useGameContext();
+  const {
+    game,
+    verifyExistsAndUpdateGameSaved,
+    cancelCurrentGame,
+    updateGameStateOnStorage,
+  } = useGameContext();
 
   const [numeroSorteado, setNumeroSorteado] = useState<number>(0);
   const [numerosSorteadosString, setNumerosSorteadosString] =
@@ -20,20 +26,20 @@ function Game() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (game != null) {
-      console.log("nome jogo ", game.getNome());
-      console.log("nome data ", game.getDataCriacao());
-      console.log("nome jogo e data ", game.tabela.getQuantidadeCamposTabela());
-    }
-  }, [game]);
+    const gameStatus = verifyExistsAndUpdateGameSaved();
+    if (gameStatus != null) {
+      if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
+        navigate("/table");
+        return;
+      }
 
-  useEffect(() => {
-    if (gameStatus == "JOGO_NAO_CRIADO") {
+      atualizarNumerosSorteadosView();
+      if (gameStatus == "BINGO") {
+        setBingo(true);
+      }
+    } else {
       navigate("/config");
       return;
-    }
-    if (gameStatus == "JOGO_CRIADO" || gameStatus == "PREENCHENDO_TABELA") {
-      navigate("/table");
     }
   }, []);
 
@@ -47,12 +53,10 @@ function Game() {
 
     if (foiBingo) {
       setBingo(true);
-      updateStatus("BINGO");
-    } else {
-      updateStatus("JOGO_EM_ANDAMENTO");
     }
 
     setEstadoNumeroSorteado(foiAchado ? "ENCONTRADO" : "NAO_ENCONTRADO");
+    updateGameStateOnStorage();
   };
 
   const atualizarNumerosSorteadosView = () => {
@@ -64,18 +68,23 @@ function Game() {
   };
 
   const resetarJogo = () => {
-    game?.resetarJogo();
+    game.reiniciarJogoEmAndamento();
     setBingo(false);
     setNumerosSorteadosString("");
     atualizarNumerosSorteadosView();
+
+    setTimeout(() => {
+      updateGameStateOnStorage();
+    }, 500);
   };
 
   const desfazerUltimoNumeroJogado = () => {
     game?.desfazerUltimoNumeroJogado();
     atualizarNumerosSorteadosView();
+    updateGameStateOnStorage();
   };
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = (event: any) => {
     // Disable decimal number
     if (event.key === "." || event.key === ",") {
       event.preventDefault();
@@ -90,13 +99,13 @@ function Game() {
   const newGame = () => {
     cancelCurrentGame();
     navigate("/config");
-  }
+  };
 
   return (
     <>
       <h1>Hora de jogar!</h1>
       <br />
-      <h2>Jogo: {game?.getNome()}</h2>
+      <h2>Jogo: {game.getNome()}</h2>
       <br />
 
       <div
@@ -109,7 +118,11 @@ function Game() {
           gap: "30px",
         }}
       >
-        <TabelaComponent tabela={game?.tabela} editable={false} />
+        <TabelaComponent
+          tabela={game.getTabela()}
+          editable={false}
+          considerarCampoMeio={game.getEstadoNumeroDoMeioTabelaSeNulo()}
+        />
         <div
           style={{
             display: "flex",
@@ -167,14 +180,16 @@ function Game() {
           <br />
 
           <div>
-            <button
-              type="button"
-              onClick={desfazerUltimoNumeroJogado}
-              disabled={bingo}
-              style={{ width: "100%" }}
-            >
-              Desfazer último número jogado
-            </button>
+            {!bingo && (
+              <button
+                type="button"
+                onClick={desfazerUltimoNumeroJogado}
+                disabled={bingo}
+                style={{ width: "100%" }}
+              >
+                Desfazer último número jogado
+              </button>
+            )}
           </div>
 
           <br />
@@ -189,11 +204,7 @@ function Game() {
           Resetar jogo
         </button>
 
-         <Button
-            onClick={newGame}
-            text={"Novo Jogo"}
-            role={"secondary"}
-          />
+        <Button onClick={newGame} text={"Novo Jogo"} role={"secondary"} />
       </div>
     </>
   );

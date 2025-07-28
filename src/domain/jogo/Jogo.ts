@@ -5,6 +5,7 @@ import { Tabela } from "./Tabela";
 import type { Campo, ValorCampo } from "./Campo";
 
 export type JogoStatus =
+  | "JOGO_NAO_INICIADO"
   | "JOGO_CRIADO" // Jogo foi criado mas tabela não foi preenchida
   | "PREENCHENDO_TABELA" // Pelo menos um número foi preenchido na tabela
   | "JOGO_EM_ANDAMENTO" // Pelo menos um número foi sorteado
@@ -12,7 +13,7 @@ export type JogoStatus =
 
 class Jogo {
   private nome: string;
-  private readonly dataCriacao: Date;
+  private dataCriacao: Date;
 
   private readonly tabela: Tabela;
   private campoDoMeioTabelaENulo: boolean = true;
@@ -23,7 +24,7 @@ class Jogo {
 
   private status: JogoStatus;
 
-  constructor(
+  private constructor(
     nomeJogo: string,
     quantidadeColunas: number,
     quantidadeLinhas: number,
@@ -37,6 +38,21 @@ class Jogo {
     this.tabela = new Tabela(quantidadeColunas, quantidadeLinhas);
     this.regras = new RegrasBingo(regra);
     this.status = "JOGO_CRIADO";
+  }
+
+  public static createDefault(): Jogo {
+    const novoJogo = new Jogo("Jogo Teste", 2, 2, "TABELA");
+    novoJogo.status = "JOGO_NAO_INICIADO";
+    return novoJogo;
+  }
+
+  public static createCustom(
+    nomeJogo: string,
+    quantidadeColunas: number,
+    quantidadeLinhas: number,
+    regra: "LINHA" | "COLUNA" | "TABELA" = "TABELA"
+  ): Jogo {
+    return new Jogo(nomeJogo, quantidadeColunas, quantidadeLinhas, regra);
   }
 
   /**
@@ -59,6 +75,14 @@ class Jogo {
   }
 
   /**
+   * Apenas para rendering direto, não pode ser usada fora
+   * desse cenário pois não alterará o status direto do jogo
+   */
+  public getTabela(): Tabela {
+    return this.tabela;
+  }
+
+  /**
    * Set Functions
    */
 
@@ -72,9 +96,16 @@ class Jogo {
     this.nome = nomeNovo;
   }
 
+  public setDataCriacao(novaData: Date): void {
+    this.dataCriacao = novaData;
+  }
+
   /**
    * Fases do jogo dependendo do status e dados
    */
+  private seNaoIniciado() {
+    return (this.status = "JOGO_NAO_INICIADO");
+  }
   private seFaseInicial() {
     return this.status == "JOGO_CRIADO";
   }
@@ -210,6 +241,15 @@ class Jogo {
       foiAchado: numeroFoiAchadoNaTabela,
       indiceCampo: indiceDoCampoOndeNumeroFoiAchado,
     };
+  }
+
+  public verificarSeBingoEAtualizar(): void {
+    if (this.seFaseJogoAndamento()) {
+      const considerouBingo = this.verificarSeBingo();
+      if (considerouBingo) {
+        this.status = "BINGO";
+      }
+    }
   }
 
   public desfazerUltimoNumeroJogado() {

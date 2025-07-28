@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, type ReactNode, useState, useContext } from "react";
-import { Jogo } from "../../../domain/jogo/Jogo";
+import { Jogo, type JogoStatus } from "../../../domain/jogo/Jogo";
+import { GameStorageService } from "../../services/GameStorageService";
+import { Campo, IndiceCampo } from "../../../domain/jogo";
 
 interface GameContextType {
-  game: Jogo | null;
-  gameStatus: GameStatus;
-  updateStatus: (status: GameStatus) => void;
+  game: Jogo;
+  verifyExistsAndUpdateGameSaved: () => string | null;
+  updateGameStateOnStorage: () => void;
   startGame: (
     nome: string,
     numeroColunas: number,
@@ -21,16 +24,9 @@ interface Props {
   children: ReactNode;
 }
 
-type GameStatus = "JOGO_NAO_CRIADO"
-    | "JOGO_CRIADO"
-    | "PREENCHENDO_TABELA"
-    | "TABELA_PREENCHIDA"
-    | "JOGO_EM_ANDAMENTO"
-    | "BINGO";
-
 function GameProvider({ children }: Props) {
-  const [game, setGame] = useState<Jogo | null>(null);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("JOGO_NAO_CRIADO");
+  const [game, setGame] = useState<Jogo>(Jogo.createDefault());
+  const gameStorageService = new GameStorageService();
 
   const startGame = (
     nome: string,
@@ -38,31 +34,127 @@ function GameProvider({ children }: Props) {
     numeroLinhas: number = 3,
     regra: "LINHA" | "COLUNA" | "TABELA" = "TABELA"
   ): void => {
-    if (game != null) {
+    if (game.getStatus() != "JOGO_NAO_INICIADO") {
       throw new Error("Jogo " + game.getNome() + " já está em andamento.");
     }
-    const jogo = new Jogo(nome, numeroColunas, numeroLinhas, regra);
+    const jogo = Jogo.createCustom(nome, numeroColunas, numeroLinhas, regra);
     setGame(jogo);
-    setGameStatus("JOGO_CRIADO");
+    gameStorageService.updateGame(jogo);
   };
 
-  const updateStatus = (status: GameStatus): void => {
-    if (status == null || status == undefined) {
-      throw new Error("Status não reconhecido.")
+  const recuperateGameFromStorage = (jogo: any): Jogo => {
+    const regras = (
+      coluna: boolean,
+      linha: boolean,
+      tabela: boolean
+    ): "LINHA" | "COLUNA" | "TABELA" => {
+      if (coluna) return "COLUNA";
+      if (linha) return "LINHA";
+      if (tabela) return "TABELA";
+      throw new Error("Nenhuma regra salva.");
+    };
+
+    const status: JogoStatus = jogo["status"];
+
+    const novoJogo = Jogo.createCustom(
+      jogo["nome"],
+      jogo["tabela"]["quantidadeColunas"],
+      jogo["tabela"]["quantidadeLinhas"],
+      regras(
+        jogo["regras"]["colunaMarcada"],
+        jogo["regras"]["linhaMarcada"],
+        jogo["regras"]["tabelaMarcada"]
+      )
+    );
+
+    novoJogo.alterarEstadoCampoDoMeioTabela(jogo["campoDoMeioTabelaENulo"]);
+    novoJogo.setDataCriacao(new Date(jogo["dataCriacao"]));
+
+    if (status == "JOGO_CRIADO") {
+      return novoJogo;
     }
-    setGameStatus(status);
-  }
+
+    const tabela: any = jogo["tabela"]["campos"];
+
+    for (let i = 0; i < novoJogo.getQuantidadeLinhas(); i++) {
+      for (let j = 0; j < novoJogo.getQuantidadeColunas(); j++) {
+        const novoIndiceCampo = new IndiceCampo(
+          tabela[i][j]["indice"]["x"],
+          tabela[i][j]["indice"]["y"]
+        );
+        const novoCampo = new Campo(
+          novoIndiceCampo,
+          tabela[i][j]["valor"],
+          tabela[i][j]["marcado"],
+          tabela[i][j]["considerar"]
+        );
+        novoJogo.atualizarCampoTabela(novoCampo);
+      }
+    }
+
+    if (status == "PREENCHENDO_TABELA") {
+      return novoJogo;
+    }
+
+    novoJogo.iniciarJogo();
+
+    if (jogo["numerosSorteados"].length == 0) {
+      return novoJogo;
+    }
+
+    for (let i = 0; i < jogo["numerosSorteados"].length; i++) {
+      novoJogo.jogarNumero(jogo["numerosSorteados"][i]["valor"]);
+    }
+
+    novoJogo.verificarSeBingoEAtualizar();
+
+    return novoJogo;
+  };
+
+  const verifyExistsAndUpdateGameSaved = (): string | null => {
+    if (game) {
+      if (game.getStatus() != "JOGO_NAO_INICIADO") {
+        return game.getStatus();
+      }
+    }
+
+    const gameSavedOnStorageAsJSON: any = gameStorageService.getGame();
+    if (gameSavedOnStorageAsJSON) {
+      const novoJogo = recuperateGameFromStorage(gameSavedOnStorageAsJSON);
+      setGame(novoJogo);
+
+      setTimeout(() => {
+        return novoJogo.getStatus();
+      }, 500);
+    }
+
+    return null;
+  };
+
+  const updateGameStateOnStorage = (): void => {
+    if (game) {
+      gameStorageService.updateGame(game);
+    }
+  };
 
   const cancelCurrentGame = (): void => {
-    if (game == null) {
-      throw new Error("Não há nenhum jogo iniciado.")
+    if (game.getStatus() == "JOGO_NAO_INICIADO") {
+      throw new Error("Não há nenhum jogo iniciado.");
     }
-    setGame(null);
-    updateStatus("JOGO_NAO_CRIADO");
-  }
+    setGame(Jogo.createDefault());
+    gameStorageService.clearGame();
+  };
 
   return (
-    <GameContext.Provider value={{ game, startGame, gameStatus, updateStatus, cancelCurrentGame }}>
+    <GameContext.Provider
+      value={{
+        game,
+        verifyExistsAndUpdateGameSaved,
+        updateGameStateOnStorage,
+        startGame,
+        cancelCurrentGame,
+      }}
+    >
       {children}
     </GameContext.Provider>
   );
