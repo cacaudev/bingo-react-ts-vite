@@ -5,6 +5,8 @@ import { GameProvider } from "../state/context/GameContext";
 import { Table } from "../../presentation/components/pages/table/Table";
 import { ConfigurationTable } from "../../presentation/components/pages/configuration/ConfigurationTable";
 import { Page } from "../../presentation/layout/page/Page";
+import { ToastProvider } from "../state/context/ToastContext";
+import { ToastAlert } from "../../presentation/components/ui/toast/ToastAlert";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +37,10 @@ function CustomRouterProvider() {
   return (
     <>
       <GameProvider>
-        <RouterProvider router={router} />
+        <ToastProvider>
+          <ToastAlert />
+          <RouterProvider router={router} />
+        </ToastProvider>
       </GameProvider>
     </>
   );

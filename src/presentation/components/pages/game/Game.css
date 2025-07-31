@@ -30,6 +30,9 @@
   width: 100%;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
 }
 
 .c-play-number {
@@ -37,12 +40,12 @@
   flex: 1;
   flex-wrap: nowrap;
   flex-direction: row;
-  gap: 0.8em;
+  gap: 0.2em;
   margin-bottom: 0.2em;
 }
 
 .c-play-number input.form-control {
-  width: 30%;
+  width: 32%;
 }
 
 .c-bingo-message {

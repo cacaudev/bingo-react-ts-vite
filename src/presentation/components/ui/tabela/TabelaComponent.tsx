@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./TabelaComponent.css";
 import { Campo, Tabela } from "../../../../domain/jogo";
 import { CampoComponent } from "../campo/CampoComponent";
+import { useToastContext } from "../../../../infrastructure/state/context/ToastContext";
 
 interface Props {
   tabela: Tabela;
@@ -13,30 +14,32 @@ interface Props {
 
 function TabelaComponent(props: Props) {
   const [tabela, setTabela] = useState<Tabela>(props.tabela);
+  const { addAlert } = useToastContext();
 
   const fieldChanged = (campo: Campo) => {
-    if (props.editable) {
-      if (
-        props.changeTableCallback == undefined ||
-        props.changeTableCallback == null
-      ) {
-        throw new Error(
-          "Função de callback para alteração na tabela não setada."
-        );
-      }
-
-      if (
-        tabela.verificarSeValorJaExisteNaTabela(
-          campo.getValor(),
-          campo.getIndice()
-        )
-      ) {
-        alert("Valor já existe na tabela.");
-        return;
-      }
-
-      props.changeTableCallback(campo);
+    if (!props.editable) {
+      return;
     }
+
+    if (
+      props.changeTableCallback == undefined ||
+      props.changeTableCallback == null
+    ) {
+      addAlert("Favor atualizar página.", "ERROR");
+      console.log("Função de callback para alteração na tabela não setada.");
+      return;
+    }
+
+    if (
+      tabela.verificarSeValorJaExisteNaTabela(
+        campo.getValor(),
+        campo.getIndice()
+      )
+    ) {
+      addAlert("Valor já existe na tabela.", "ERROR");
+      return;
+    }
+    props.changeTableCallback(campo);
   };
 
   useEffect(() => {

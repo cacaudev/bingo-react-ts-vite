@@ -7,6 +7,7 @@ import { NumeroSorteado } from "../../../../domain/jogo";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button/Button";
 import "./Game.css";
+import { useToastContext } from "../../../../infrastructure/state/context/ToastContext";
 
 function Game() {
   const {
@@ -25,6 +26,7 @@ function Game() {
   const [bingo, setBingo] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { addAlert } = useToastContext();
 
   useEffect(() => {
     const gameStatus = verifyExistsAndUpdateGameSaved();
@@ -69,6 +71,7 @@ function Game() {
 
     if (foiBingo) {
       setBingo(true);
+      addAlert("Parabéns!!","SUCCESS")
     }
 
     setAchadoNumeroSorteado(foiAchado);
@@ -125,7 +128,10 @@ function Game() {
   };
 
   const TooltipCustom = ({ id, children, title }) => (
-    <OverlayTrigger placement="top" overlay={<Tooltip id={id}>{title}</Tooltip>}>
+    <OverlayTrigger
+      placement="top"
+      overlay={<Tooltip id={id}>{title}</Tooltip>}
+    >
       <a>{children}</a>
     </OverlayTrigger>
   );
@@ -153,10 +159,11 @@ function Game() {
                 value={numeroSorteado}
                 disabled={bingo}
                 onKeyDown={handleKeyPress}
+                placeholder="Número"
               />
               <Button
                 onClick={jogarNumero}
-                text={"Jogar número"}
+                text={"Adicionar número sorteado"}
                 role={"primary"}
               />
             </div>
@@ -172,7 +179,7 @@ function Game() {
           </div>
 
           <div className="c-sorted-numbers">
-            <h5>Números sorteados:</h5>
+            <h6>Números sorteados:</h6>
             <div>
               <h5>{numerosSorteadosString}</h5>
             </div>
@@ -191,15 +198,22 @@ function Game() {
       <br />
 
       <div className="c-game__footer_buttons">
-        <TooltipCustom title="Desmarcar todos os números sorteados da cartela atual." id="t-1">
+        <TooltipCustom
+          title="Desmarcar todos os números sorteados da cartela atual."
+          id="t-1"
+        >
           <Button
             onClick={resetarJogo}
             text={"Resetar Jogo"}
             role={"secondary"}
           />
         </TooltipCustom>
-         <TooltipCustom title="Inicia novo jogo para nova cartela." id="t-2">
-        <Button onClick={newGame} text={"Cancela Jogo Atual"} role={"secondary"} />
+        <TooltipCustom title="Inicia novo jogo para nova cartela." id="t-2">
+          <Button
+            onClick={newGame}
+            text={"Cancela Jogo Atual"}
+            role={"secondary"}
+          />
         </TooltipCustom>
       </div>
     </>

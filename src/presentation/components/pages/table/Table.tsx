@@ -7,6 +7,7 @@ import type { Campo } from "../../../../domain/jogo";
 import { Form } from "react-bootstrap";
 import { Button } from "../../ui/button/Button";
 import "./Table.css";
+import { useToastContext } from "../../../../infrastructure/state/context/ToastContext";
 
 function Table() {
   const {
@@ -18,6 +19,8 @@ function Table() {
 
   const navigate = useNavigate();
   const [campoDoMeioMarcado, setCampoDoMeioMarcado] = useState<boolean>(true);
+
+  const { addAlert } = useToastContext();
 
   useEffect(() => {
     const gameStatus = verifyExistsAndUpdateGameSaved();
@@ -42,7 +45,7 @@ function Table() {
     } catch (e: any) {
       if (e instanceof Error) {
         console.error("An error occurred:", e.message);
-        alert(e.message);
+        addAlert("Um erro ocorreu. Favor atualizar a página.", "ERROR");
       } else {
         console.error("An unknown error occurred:", e);
       }
@@ -62,10 +65,11 @@ function Table() {
       updateGameStateOnStorage();
     } catch (e: any) {
       if (e instanceof Error) {
-        alert(
-          "Valor de um dos campos da tabela é inválido, vazio ou repetido."
+        addAlert(
+          "Valor de um dos campos da tabela é inválido, vazio ou repetido.",
+          "ERROR"
         );
-        throw e;
+        return;
       } else {
         console.error("An unknown error occurred:", e);
         return;
