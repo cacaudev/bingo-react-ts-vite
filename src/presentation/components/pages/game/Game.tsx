@@ -178,9 +178,9 @@ function Game() {
             )}
           </div>
 
-          <div className="c-sorted-numbers">
+          <div className="c-sorted-numbers" style={{ maxWidth: '425px' }}>
             <h6>Números sorteados:</h6>
-            <div style={{ maxWidth: '300px' }}>
+            <div>
               <h5>{numerosSorteadosString}</h5>
             </div>
           </div>
