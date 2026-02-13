@@ -180,7 +180,7 @@ function Game() {
 
           <div className="c-sorted-numbers">
             <h6>Números sorteados:</h6>
-            <div>
+            <div style={{ maxWidth: '300px' }}>
               <h5>{numerosSorteadosString}</h5>
             </div>
           </div>
