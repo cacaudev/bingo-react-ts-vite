@@ -1,69 +1,69 @@
-# React + TypeScript + Vite
+[PT-BR]
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Bingo Player App (React + TypeScript + Vite)
+Projeto de estudo onde um usuário pode construir uma folha de bingo online a partir de uma já pronta e jogar o bingo de maneira mais automatizada.
 
-Currently, two official plugins are available:
+## Roadmap
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Implementar lógica de domínio utilizando DDD (Domain Driven Design)
 
-## Expanding the ESLint configuration
+- Separar contextos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Implementar testes automatizados para camada de domínio
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Implementar interface usando React com Typescript, ViteJS
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Implementar documentação de componentes via Storybook
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Funcionalidades
+- Preview em tempo real na documentação via Storyboook
+- Criar tabela de jogo customizada
+- Parâmetros para ser considerado bingo:
+  - Pelo menos uma linha marcada
+  - Pelo menos uma coluna marcada
+  - Tabela toda marcada
+- Aviso de Bingo em tempo real ao completar um tabela usando os parâmetros de bingo selecionados
+- Salvar jogo em local storage do navegador
+
+## Rodando localmente
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/cacaudev/bingo-react-ts-vite.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Entre no diretório do projeto
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+  cd bingo-react-ts-vite
 ```
+
+Instale as dependências
+
+```bash
+  npm install
+```
+
+Inicie o servidor
+
+```bash
+  npm run dev
+```
+
+Inicie a build
+
+```bash
+  npm run build
+```
+## Rodando os testes
+Para rodar os testes, rode o seguinte comando
+
+```bash
+  npm run test
+```
+
+
+## Licença
+
+[MIT](https://choosealicense.com/licenses/mit/)
