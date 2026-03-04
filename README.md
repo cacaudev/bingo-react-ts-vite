@@ -27,7 +27,7 @@ Projeto de estudo onde um usuário pode construir uma folha de bingo online a pa
 
 # Page Demo
 
-![Bingo Playing Page State](docs/screenshots/BingoPlayingPage.png?raw=true)
+![Bingo Playing Page State](docs/screenshots/PlayingPage.png?raw=true)
 
 ## Rodando localmente
 
