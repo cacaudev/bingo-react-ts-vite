@@ -3,10 +3,6 @@
 # Bingo Player App (React + TypeScript + Vite)
 Projeto de estudo onde um usuário pode construir uma folha de bingo online a partir de uma já pronta e jogar o bingo de maneira mais automatizada.
 
-# Screenshots
-
-
-
 ## Roadmap
 
 - Implementar lógica de domínio utilizando DDD (Domain Driven Design)
@@ -28,6 +24,10 @@ Projeto de estudo onde um usuário pode construir uma folha de bingo online a pa
   - Tabela toda marcada
 - Aviso de Bingo em tempo real ao completar um tabela usando os parâmetros de bingo selecionados
 - Salvar jogo em local storage do navegador
+
+# Page Demo
+
+![Bingo Playing Page State](docs/screenshots/BingoPlayingPage.png?raw=true)
 
 ## Rodando localmente
 
