@@ -1,7 +1,7 @@
 [PT-BR]
 
 # Bingo Player App (React + TypeScript + Vite)
-Projeto de estudo onde um usuário pode construir uma folha de bingo online a partir de uma já pronta e jogar o bingo de maneira mais automatizada.
+Projeto de estudo onde um usuário pode construir uma folha de bingo online a partir de uma já populada e jogar o bingo de maneira mais automatizada.
 
 ## Roadmap
 
